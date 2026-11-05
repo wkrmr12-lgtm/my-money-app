@@ -2,18 +2,15 @@
 import { useState, useEffect } from 'react'
 import FinanceChart from './FinanceChart.jsx'
 import IncomeForm from './IncomeForm.jsx'
-function IncomePanel({ selectedMonth, monthlyTotal }) {
+
+function IncomePanel({
+    selectedMonth,
+    monthlyTotal,
+    incomes,
+    setIncomes
+  }) {
+  
     console.log('수입 관리 조회 월:', selectedMonth)
-  const [incomes, setIncomes] = useState(() => {
-    try {
-      const saved = JSON.parse(
-        localStorage.getItem('mymoney-income') || '[]'
-      )
-      return Array.isArray(saved) ? saved : []
-    } catch {
-      return []
-    }
-  })
 
   const [name, setName] = useState('')
   const [amount, setAmount] = useState('')
@@ -21,12 +18,6 @@ function IncomePanel({ selectedMonth, monthlyTotal }) {
     () => `${selectedMonth}-01`
   )
 
-  useEffect(() => {
-    localStorage.setItem(
-      'mymoney-income',
-      JSON.stringify(incomes)
-    )
-  }, [incomes])
 
   const monthlyIncomes = incomes.filter(
     item => item.date?.startsWith(selectedMonth)
@@ -72,15 +63,7 @@ function IncomePanel({ selectedMonth, monthlyTotal }) {
       <h2>💵 수입 관리</h2>
 
 
-      <IncomeForm
-  name={name}
-  amount={amount}
-  date={date}
-  onNameChange={setName}
-  onAmountChange={setAmount}
-  onDateChange={setDate}
-  onSubmit={addIncome}
-/>
+
 
 <FinanceChart
   incomeTotal={incomeTotal}

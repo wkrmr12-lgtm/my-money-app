@@ -1142,3 +1142,176 @@
     margin-bottom: 26px;
   }
 }
+
+/* MyMoney v5.0 - 수입·지출 간편 등록 레이아웃 */
+
+.entry-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+  margin: 24px 0;
+}
+
+.entry-grid > .income-entry,
+.entry-grid > .expense-form {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.entry-grid input,
+.entry-grid select,
+.entry-grid button {
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+@media (max-width: 800px) {
+  .entry-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* MyMoney - 상단 수입 등록창 레이아웃 수정 */
+
+.entry-grid .income-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 20px;
+  align-content: start;
+}
+
+/* 수입 날짜: 첫 번째 줄 전체 */
+.entry-grid .income-date-label {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: #475569;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.entry-grid .income-date-label input {
+  width: 100%;
+}
+
+/* 수입 이름과 수입 금액: 두 번째 줄 */
+.entry-grid .income-form > input {
+  width: 100%;
+  min-width: 0;
+}
+
+/* 수입 추가 버튼: 마지막 줄 전체 */
+.entry-grid .income-form > button {
+  grid-column: 1 / -1;
+  width: 100%;
+  min-height: 60px;
+}
+
+/* 좁은 화면에서도 입력창이 넘치지 않도록 */
+@media (max-width: 480px) {
+  .entry-grid .income-form {
+    gap: 12px;
+  }
+}
+
+/* MyMoney - 수입·지출 날짜 제목 통일 */
+
+.entry-grid .income-date-label,
+.entry-grid .expense-date-label {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  font-size: 15px;
+  font-weight: 600;
+  color: #475569;
+  line-height: 1.5;
+}
+
+/* 날짜 입력창 크기 통일 */
+.entry-grid .income-date-label input,
+.entry-grid .expense-date-label input {
+  width: 100%;
+  min-height: 60px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #172a46;
+}
+
+/* 수입 추가 버튼 크기 및 위치 조정 */
+.entry-grid .income-form > button {
+  grid-column: 2;
+  width: 100%;
+  min-height: 60px;
+}
+
+/* MyMoney - 수입·지출 등록 버튼 크기 통일 */
+
+.entry-grid .income-form > button,
+.entry-grid .expense-form form > button {
+  height: 60px;
+  min-height: 60px;
+  padding: 0 16px;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+/* 수입 버튼은 오른쪽 열에 배치 */
+.entry-grid .income-form > button {
+  grid-column: 2;
+  align-self: start;
+}
+
+/* 두 입력 양식의 행 간격 통일 */
+.entry-grid .income-form,
+.entry-grid .expense-form form {
+  row-gap: 16px;
+}
+
+/* 수입·지출 등록 완료 알림 */
+.toast-success {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 24px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 14px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+  color: #065f46;
+}
+
+.toast-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #10b981;
+  color: white;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.toast-success strong {
+  font-size: 16px;
+}
+
+.toast-success p {
+  margin: 4px 0 0;
+  font-size: 14px;
+}

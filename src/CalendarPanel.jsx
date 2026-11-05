@@ -1,10 +1,13 @@
 
+
 function CalendarPanel({
     selectedMonth,
     selectedDate,
     items,
-    onSelectDate
+    onSelectDate,
+    onDeleteExpense
   }) {
+  
     const [year, month] = selectedMonth.split('-').map(Number)
   
     // 해당 월의 첫 번째 날짜와 마지막 날짜
