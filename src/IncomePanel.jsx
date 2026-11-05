@@ -7,9 +7,11 @@ function IncomePanel({
     selectedMonth,
     monthlyTotal,
     incomes,
-    setIncomes
+    setIncomes,
+    onIncomeEdited
   }) {
 const [showAllIncomes, setShowAllIncomes] = useState(false)
+const [editingIncome, setEditingIncome] = useState(null)
 
     console.log('수입 관리 조회 월:', selectedMonth)
 
@@ -60,6 +62,16 @@ const [showAllIncomes, setShowAllIncomes] = useState(false)
     setIncomes(prev => prev.filter(item => item.id !== id))
   }
 
+  function updateIncome(id, updatedData) {
+    setIncomes(prev =>
+      prev.map(item =>
+        item.id === id
+          ? { ...item, ...updatedData }
+          : item
+      )
+    )
+  }
+  
   return (
     <section className="income-panel">
 <p>🔍 현재 조회 중인 월: {selectedMonth}</p>
@@ -119,6 +131,25 @@ const [showAllIncomes, setShowAllIncomes] = useState(false)
             </strong>
 
             <button
+  type="button"
+  className="income-edit-btn"
+  
+onClick={() => {
+    setEditingIncome({ ...item })
+  
+    requestAnimationFrame(() => {
+      document.getElementById('income-edit-form')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      })
+    })
+  }}
+  
+>
+  ✏️ 수정
+</button>
+
+            <button
               type="button"
               onClick={() => deleteIncome(item.id)}
             >
@@ -126,6 +157,89 @@ const [showAllIncomes, setShowAllIncomes] = useState(false)
             </button>
           </div>
         ))}
+
+{editingIncome && (
+  <form
+    id="income-edit-form"
+    className="income-edit-form"
+    onSubmit={e => {
+      e.preventDefault()
+
+      if (
+        !editingIncome.name?.trim() ||
+        !Number.isFinite(Number(editingIncome.amount)) ||
+        Number(editingIncome.amount) <= 0 ||
+        !editingIncome.date
+      ) {
+        alert('수입 정보를 올바르게 입력해 주세요.')
+        return
+      }
+
+      updateIncome(editingIncome.id, {
+        name: editingIncome.name.trim(),
+        amount: Number(editingIncome.amount),
+        date: editingIncome.date
+      })
+    
+      onIncomeEdited()
+      setEditingIncome(null)
+    }}
+  >
+    <h3>✏️ 수입 내역 수정</h3>
+
+    <label>
+      수입 이름
+      <input
+        type="text"
+        value={editingIncome.name}
+        onChange={e =>
+          setEditingIncome(prev => ({
+            ...prev,
+            name: e.target.value
+          }))
+        }
+      />
+    </label>
+
+    <label>
+      수입 금액
+      <input
+        type="number"
+        min="1"
+        value={editingIncome.amount}
+        onChange={e =>
+          setEditingIncome(prev => ({
+            ...prev,
+            amount: e.target.value
+          }))
+        }
+      />
+    </label>
+
+    <label>
+      수입 날짜
+      <input
+        type="date"
+        value={editingIncome.date}
+        onChange={e =>
+          setEditingIncome(prev => ({
+            ...prev,
+            date: e.target.value
+          }))
+        }
+      />
+    </label>
+
+    <button type="submit">수정 완료</button>
+
+    <button
+      type="button"
+      onClick={() => setEditingIncome(null)}
+    >
+      취소
+    </button>
+  </form>
+)}
 
 {monthlyIncomes.length > 5 && (
   <button
