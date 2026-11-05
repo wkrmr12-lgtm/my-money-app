@@ -1315,3 +1315,53 @@
   margin: 4px 0 0;
   font-size: 14px;
 }
+
+/* MyMoney - 수입 내역 전체 보기 버튼 */
+.income-list .income-more-btn {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 16px 20px;
+  background: #f1f5f9;
+  color: #1e3a5f;
+  border: 1px solid #dbe3ee;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.income-list .income-more-btn:hover {
+  background: #e2e8f0;
+}
+
+.income-list .income-more-btn:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+}
+
+/* 소비 캘린더 더 보기 / 접기 버튼 */
+.calendar-panel .calendar-more-btn {
+  display: block;
+  width: 100%;
+  margin: 16px 0;
+  padding: 16px 20px;
+  background: #f1f5f9;
+  color: #1e3a5f;
+  border: 1px solid #dbe3ee;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.calendar-panel .calendar-more-btn:hover {
+  background: #e2e8f0;
+}
+
+.calendar-panel .calendar-more-btn:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+}

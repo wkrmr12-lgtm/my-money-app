@@ -9,7 +9,8 @@ function IncomePanel({
     incomes,
     setIncomes
   }) {
-  
+const [showAllIncomes, setShowAllIncomes] = useState(false)
+
     console.log('수입 관리 조회 월:', selectedMonth)
 
   const [name, setName] = useState('')
@@ -19,9 +20,11 @@ function IncomePanel({
   )
 
 
-  const monthlyIncomes = incomes.filter(
-    item => item.date?.startsWith(selectedMonth)
-  )
+
+  const monthlyIncomes = incomes
+  .filter(item => item.date?.startsWith(selectedMonth))
+  .sort((a, b) => b.date.localeCompare(a.date))
+
 
   const incomeTotal = monthlyIncomes.reduce(
     (sum, item) => sum + Number(item.amount), 0
@@ -101,7 +104,10 @@ function IncomePanel({
           </p>
         )}
 
-        {monthlyIncomes.map(item => (
+     
+{(showAllIncomes ? monthlyIncomes : monthlyIncomes.slice(0, 5)).map(item => (
+
+
           <div className="income-item" key={item.id}>
             <div>
               <strong>{item.name}</strong>
@@ -120,6 +126,17 @@ function IncomePanel({
             </button>
           </div>
         ))}
+
+{monthlyIncomes.length > 5 && (
+  <button
+    type="button"
+    className="income-more-btn"
+    onClick={() => setShowAllIncomes(!showAllIncomes)}
+  >
+    {showAllIncomes ? '접기 ▲' : `전체 수입 내역 보기 (${monthlyIncomes.length}건) ▼`}
+  </button>
+)}
+
       </div>
     </section>
   )

@@ -1,1 +1,1 @@
-<IncomePanel
+{(showAllExpenses ? selectedExpenses : selectedExpenses.slice(0, 5)).map(item => (

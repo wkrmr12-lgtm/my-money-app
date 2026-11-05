@@ -1,4 +1,4 @@
-
+import { useState } from 'react'
 
 function CalendarPanel({
     selectedMonth,
@@ -7,7 +7,8 @@ function CalendarPanel({
     onSelectDate,
     onDeleteExpense
   }) {
-  
+const [showAllExpenses, setShowAllExpenses] = useState(false)
+
     const [year, month] = selectedMonth.split('-').map(Number)
   
     // 해당 월의 첫 번째 날짜와 마지막 날짜
@@ -70,7 +71,12 @@ function CalendarPanel({
                   'calendar-day' +
                   (selectedDate === date ? ' selected' : '')
                 }
-                onClick={() => onSelectDate(date)}
+                
+onClick={() => {
+    setShowAllExpenses(false)
+    onSelectDate(date)
+  }}
+  
               >
                 <span>{day}</span>
   
@@ -90,7 +96,9 @@ function CalendarPanel({
           {selectedExpenses.length === 0 ? (
             <p>이 날짜에 등록된 지출이 없어요.</p>
           ) : (
-            selectedExpenses.map(item => (
+            
+    (showAllExpenses ? selectedExpenses : selectedExpenses.slice(0, 5)).map(item => (
+
               <div className="calendar-expense" key={item.id}>
                 <span>{item.name}</span>
                 <strong>
@@ -100,6 +108,18 @@ function CalendarPanel({
             ))
           )}
   
+{selectedExpenses.length > 5 && (
+  <button
+    type="button"
+    className="calendar-more-btn"
+    onClick={() => setShowAllExpenses(!showAllExpenses)}
+  >
+    {showAllExpenses
+      ? '접기 ▲'
+      : `나머지 ${selectedExpenses.length - 5}건 더 보기 ▼`}
+  </button>
+)}
+
           <div className="calendar-total">
             <span>선택한 날짜 합계</span>
             <strong>{selectedTotal.toLocaleString()}원</strong>
