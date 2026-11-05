@@ -182,6 +182,18 @@ const previousMonth = [
     setItems(prev => prev.filter(item => item.id !== id))
   }
 
+  function updateExpense(id, updatedData) {
+    setItems(prev =>
+      prev.map(item =>
+        item.id === id
+          ? { ...item, ...updatedData }
+          : item
+      )
+    )
+
+  setToast('expense-edit')
+  }
+  
   return (
     <main className="app">
 
@@ -189,16 +201,22 @@ const previousMonth = [
   <div className="toast-success" role="status">
     <span className="toast-check">✓</span>
     <div>
-      <strong>
-        {toast === 'income'
-          ? '수입 등록 완료!'
-          : '지출 등록 완료!'}
-      </strong>
-      <p>
-        {toast === 'income'
-          ? '수입 내역이 정상적으로 등록되었습니다.'
-          : '지출 내역이 정상적으로 등록되었습니다.'}
-      </p>
+     
+<strong>
+  {toast === 'income'
+    ? '수입 등록 완료!'
+    : toast === 'expense-edit'
+      ? '지출 수정 완료!'
+      : '지출 등록 완료!'}
+</strong>
+<p>
+  {toast === 'income'
+    ? '수입 내역이 정상적으로 등록되었습니다.'
+    : toast === 'expense-edit'
+      ? '지출 내역이 정상적으로 수정되었습니다.'
+      : '지출 내역이 정상적으로 등록되었습니다.'}
+</p>
+
     </div>
   </div>
 )}
@@ -300,6 +318,8 @@ setIncomes={setIncomes}
   items={monthlyItems}
   onSelectDate={setCalendarDate}
   onDeleteExpense={deleteExpense}
+  onUpdateExpense={updateExpense}
+  categories={categories}
 />
 
 

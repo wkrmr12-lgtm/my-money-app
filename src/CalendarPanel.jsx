@@ -5,9 +5,13 @@ function CalendarPanel({
     selectedDate,
     items,
     onSelectDate,
-    onDeleteExpense
+    onDeleteExpense,
+    onUpdateExpense,
+    categories
   }) {
 const [showAllExpenses, setShowAllExpenses] = useState(false)
+const [editingExpense, setEditingExpense] = useState(null)
+
 
     const [year, month] = selectedMonth.split('-').map(Number)
   
@@ -104,6 +108,34 @@ onClick={() => {
                 <strong>
                   {Number(item.amount).toLocaleString()}원
                 </strong>
+
+<button
+  type="button"
+  className="calendar-edit-btn"
+
+  onClick={() => {
+    setEditingExpense({ ...item })
+  
+    requestAnimationFrame(() => {
+      document.getElementById('expense-edit-form')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      })
+    })
+  }}
+  
+>
+  ✏️ 수정
+</button>
+
+<button
+  type="button"
+  className="calendar-delete-btn"
+  onClick={() => onDeleteExpense(item.id)}
+>
+  삭제
+</button>
+
               </div>
             ))
           )}
@@ -118,6 +150,111 @@ onClick={() => {
       ? '접기 ▲'
       : `나머지 ${selectedExpenses.length - 5}건 더 보기 ▼`}
   </button>
+)}
+
+{editingExpense && (
+  <form
+    id="expense-edit-form"
+    className="calendar-edit-form"
+    onSubmit={e => {
+      e.preventDefault()
+
+      if (
+        !editingExpense.name?.trim() ||
+        !Number.isFinite(Number(editingExpense.amount)) ||
+        Number(editingExpense.amount) <= 0 ||
+        !editingExpense.date ||
+        !editingExpense.category
+      ) {
+        alert('수정할 지출 정보를 올바르게 입력해 주세요.')
+        return
+      }
+
+      onUpdateExpense(editingExpense.id, {
+        name: editingExpense.name.trim(),
+        amount: Number(editingExpense.amount),
+        date: editingExpense.date,
+        category: editingExpense.category
+      })
+
+      setEditingExpense(null)
+    }}
+  >
+    <h3>✏️ 지출 내역 수정</h3>
+
+    <label>
+      사용처
+      <input
+        type="text"
+        value={editingExpense.name}
+        onChange={e =>
+          setEditingExpense(prev => ({
+            ...prev,
+            name: e.target.value
+          }))
+        }
+      />
+    </label>
+
+    <label>
+      지출 금액
+      <input
+        type="number"
+        min="1"
+        value={editingExpense.amount}
+        onChange={e =>
+          setEditingExpense(prev => ({
+            ...prev,
+            amount: e.target.value
+          }))
+        }
+      />
+    </label>
+
+    <label>
+      지출 날짜
+      <input
+        type="date"
+        value={editingExpense.date}
+        onChange={e =>
+          setEditingExpense(prev => ({
+            ...prev,
+            date: e.target.value
+          }))
+        }
+      />
+    </label>
+
+    <label>
+      카테고리
+      <select
+        value={editingExpense.category}
+        onChange={e =>
+          setEditingExpense(prev => ({
+            ...prev,
+            category: e.target.value
+          }))
+        }
+      >
+       
+        {categories.map(cat => (
+        <option key={cat} value={cat}>
+        {cat}
+        </option>
+))}
+
+      </select>
+    </label>
+
+    <button type="submit">수정 완료</button>
+
+    <button
+      type="button"
+      onClick={() => setEditingExpense(null)}
+    >
+      취소
+    </button>
+  </form>
 )}
 
           <div className="calendar-total">
