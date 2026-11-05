@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react'
 import FinanceChart from './FinanceChart.jsx'
+import IncomeForm from './IncomeForm.jsx'
 function IncomePanel({ selectedMonth, monthlyTotal }) {
     console.log('수입 관리 조회 월:', selectedMonth)
   const [incomes, setIncomes] = useState(() => {
@@ -70,30 +71,17 @@ function IncomePanel({ selectedMonth, monthlyTotal }) {
 <p>🔍 현재 조회 중인 월: {selectedMonth}</p>
       <h2>💵 수입 관리</h2>
 
-      <form className="income-form" onSubmit={addIncome}>
-        <input
-          type="text"
-          placeholder="수입 이름 (예: 월급)"
-          value={name}
-          onChange={e => setName(e.target.value)}
-        />
 
-        <input
-          type="number"
-          min="1"
-          placeholder="수입 금액"
-          value={amount}
-          onChange={e => setAmount(e.target.value)}
-        />
+      <IncomeForm
+  name={name}
+  amount={amount}
+  date={date}
+  onNameChange={setName}
+  onAmountChange={setAmount}
+  onDateChange={setDate}
+  onSubmit={addIncome}
+/>
 
-        <input
-          type="date"
-          value={date}
-          onChange={e => setDate(e.target.value)}
-        />
-
-        <button type="submit">+ 수입 추가</button>
-      </form>
 <FinanceChart
   incomeTotal={incomeTotal}
   expenseTotal={monthlyTotal}
