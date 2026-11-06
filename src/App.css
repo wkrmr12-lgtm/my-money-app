@@ -1793,3 +1793,64 @@
 .mymoney-v6 .v6-memo-record-main p { white-space: pre-wrap; }
 .mymoney-v6 .v6-memo-record-actions button { min-height: 38px; }
 .mymoney-v6 .v6-memo-save:focus-visible, .mymoney-v6 .v6-memo-edit:focus-visible, .mymoney-v6 .v6-memo-delete:focus-visible { outline:3px solid #93c5fd; outline-offset:2px; }
+
+/* MyMoney v6.0 Step 4 - 사진으로 지출 일괄 등록 */
+.mymoney-v6 .v6-photo-open-trigger {
+  width:100%; min-height:54px; padding:14px 18px;
+  border-radius:14px; border:1px solid #c3dbff;
+  background:#eaf2ff; color:#174174; font:inherit;
+  font-size:16px; font-weight:750; cursor:pointer;
+}
+.mymoney-v6 .v6-photo-open-trigger:hover { background:#dceaff; }
+.mymoney-v6 .v6-photo-import-panel { margin:0; padding:24px; border:1px solid #dbe6f3; background:#fff; border-radius:18px; }
+.mymoney-v6 .v6-photo-head { display:flex; justify-content:space-between; gap:16px; align-items:flex-start; margin-bottom:18px; }
+.mymoney-v6 .v6-photo-head h3 { margin:0 0 8px; font-size:19px; color:#132e50; }
+.mymoney-v6 .v6-photo-head p { margin:0; font-size:13px; line-height:1.6; color:#64748b; }
+.mymoney-v6 .v6-photo-close { flex-shrink:0; background:#f8fafc; border:1px solid #dce4ee; color:#475569; border-radius:10px; padding:9px 12px; font:inherit; cursor:pointer; }
+.mymoney-v6 .v6-photo-file-input { position:absolute; width:1px; height:1px; overflow:hidden; opacity:0; pointer-events:none; }
+.mymoney-v6 .v6-photo-select { width:100%; min-height:140px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px; padding:20px; border:2px dashed #b9d2f7; border-radius:16px; background:#f6f9ff; color:#173c69; font:inherit; cursor:pointer; }
+.mymoney-v6 .v6-photo-select:hover { background:#edf4ff; }
+.mymoney-v6 .v6-photo-select-icon { font-size:32px; line-height:1; color:#2563eb; }
+.mymoney-v6 .v6-photo-select strong { font-size:16px; }
+.mymoney-v6 .v6-photo-select small { color:#64748b; font-size:12px; }
+.mymoney-v6 .v6-photo-hint { color:#64748b; font-size:12px; line-height:1.6; margin:12px 0 0; }
+.mymoney-v6 .v6-photo-preview { display:block; margin:15px auto; width:auto; max-width:100%; max-height:260px; object-fit:contain; border-radius:12px; border:1px solid #e2e8f0; }
+.mymoney-v6 .v6-photo-progress { margin:16px 0; color:#32527a; font-size:13px; font-weight:650; }
+.mymoney-v6 .v6-photo-progress-track { height:9px; margin-top:8px; background:#e2e8f0; border-radius:99px; overflow:hidden; }
+.mymoney-v6 .v6-photo-progress-track > div { height:100%; border-radius:99px; background:#2563eb; transition:width .2s; }
+.mymoney-v6 .v6-photo-error { margin:14px 0; padding:13px; border-radius:10px; border:1px solid #fecdd3; background:#fff1f2; color:#9f1239; font-size:13px; line-height:1.6; }
+.mymoney-v6 .v6-photo-results { margin-top:24px; display:grid; gap:13px; }
+.mymoney-v6 .v6-photo-results-head { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px; }
+.mymoney-v6 .v6-photo-results-head h4 { font-size:17px; color:#132e50; margin:0; }
+.mymoney-v6 .v6-photo-results-head span, .mymoney-v6 .v6-photo-notice { color:#64748b; font-size:12px; line-height:1.6; }
+.mymoney-v6 .v6-photo-notice { margin:0; }
+.mymoney-v6 .v6-photo-result { border:1px solid #e2e8f0; border-radius:15px; background:#f8fafc; padding:16px; }
+.mymoney-v6 .v6-photo-result.is-selected { border-color:#b7d0f3; background:#f6faff; }
+.mymoney-v6 .v6-photo-result-head { display:flex; justify-content:space-between; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:13px; }
+.mymoney-v6 .v6-photo-checkbox { display:flex; align-items:center; gap:8px; color:#172b4d; cursor:pointer; }
+.mymoney-v6 .v6-photo-checkbox input { width:19px; height:19px; accent-color:#2563eb; }
+.mymoney-v6 .v6-photo-tags { display:flex; gap:5px; flex-wrap:wrap; }
+.mymoney-v6 .v6-photo-tag { font-size:11px; font-weight:700; padding:5px 9px; border-radius:999px; }
+.mymoney-v6 .v6-photo-tag.warning { color:#92400e; background:#fffbeb; border:1px solid #fde68a; }
+.mymoney-v6 .v6-photo-tag.success { color:#047857; background:#ecfdf5; border:1px solid #a7f3d0; }
+.mymoney-v6 .v6-photo-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.mymoney-v6 .v6-photo-fields label { display:flex; flex-direction:column; gap:6px; font-size:12px; font-weight:650; color:#64748b; min-width:0; }
+.mymoney-v6 .v6-photo-fields .v6-photo-wide { grid-column:1/-1; }
+.mymoney-v6 .v6-photo-fields input, .mymoney-v6 .v6-photo-fields select { box-sizing:border-box; min-width:0; width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:10px; background:#fff; color:#172b4d; font:inherit; font-size:14px; }
+.mymoney-v6 .v6-photo-fields input:focus-visible, .mymoney-v6 .v6-photo-fields select:focus-visible { outline:2px solid #93c5fd; outline-offset:1px; }
+.mymoney-v6 .v6-photo-total { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-top:1px solid #e2e8f0; padding:16px 2px 0; color:#475569; font-size:14px; }
+.mymoney-v6 .v6-photo-total strong { color:#132e50; font-size:20px; overflow-wrap:anywhere; }
+.mymoney-v6 .v6-photo-submit { width:100%; background:#132e50; border:0; border-radius:12px; color:#fff; font:inherit; font-weight:750; min-height:54px; padding:12px; cursor:pointer; }
+.mymoney-v6 .v6-photo-submit:hover { background:#244c7e; }
+.mymoney-v6 .v6-photo-submit:disabled, .mymoney-v6 .v6-photo-select:disabled { opacity:.45; cursor:not-allowed; }
+.mymoney-v6 .v6-photo-raw { margin-top:18px; font-size:12px; color:#64748b; }
+.mymoney-v6 .v6-photo-raw summary { cursor:pointer; }
+.mymoney-v6 .v6-photo-raw pre { white-space:pre-wrap; overflow-wrap:anywhere; max-height:180px; overflow:auto; padding:10px; background:#f1f5f9; border-radius:10px; color:#334155; }
+@media (max-width:520px) {
+  .mymoney-v6 .v6-photo-import-panel { padding:16px; }
+  .mymoney-v6 .v6-photo-head { align-items:flex-start; }
+  .mymoney-v6 .v6-photo-head h3 { font-size:17px; }
+  .mymoney-v6 .v6-photo-fields { grid-template-columns:1fr; }
+  .mymoney-v6 .v6-photo-fields .v6-photo-wide { grid-column:auto; }
+  .mymoney-v6 .v6-photo-result { padding:13px; }
+}

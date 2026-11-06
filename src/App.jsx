@@ -7,6 +7,7 @@ import DashboardPanel from './DashboardPanel.jsx'
 import SpendingAnalysis from './SpendingAnalysis.jsx'
 import IncomePanel from './IncomePanel.jsx'
 import FinanceChart from './FinanceChart.jsx'
+import PhotoExpenseImport from './PhotoExpenseImport.jsx'
 const categories = ['식비', '카페', '쇼핑', '교통', '생활', '기타']
 
 const categoryColors = {
@@ -230,6 +231,24 @@ const previousMonth = [
 
   }
   
+  function importExpensesFromPhoto(entries) {
+    if (!Array.isArray(entries) || entries.length === 0) return
+    const imported = entries.map(entry => ({
+      id: crypto.randomUUID(),
+      name: entry.name,
+      amount: Number(entry.amount),
+      category: entry.category,
+      memo: entry.memo || '',
+      date: entry.date,
+      source: 'photo',
+    }))
+    setItems(previous => [...imported, ...previous])
+    setSelectedMonth(imported[0].date.slice(0, 7))
+    setCalendarDate(imported[0].date)
+    setPhotoImportOpen(false)
+    setToast('photo-import')
+  }
+
   function deleteExpense(id) {
     setItems(prev => prev.filter(item => item.id !== id))
   }
@@ -250,6 +269,7 @@ const previousMonth = [
   const [activeTab, setActiveTab] = useState('home')
   const [incomeFormOpen, setIncomeFormOpen] = useState(false)
   const [expenseFormOpen, setExpenseFormOpen] = useState(false)
+  const [photoImportOpen, setPhotoImportOpen] = useState(false)
   // 저장은 '메모 저장' 버튼을 누를 때만 실행합니다. 기존 글을 입력만으로 덮어쓰지 않습니다.
   const [memoEntries, setMemoEntries] = useState(() => {
     try { return readMemoEntries() } catch { return [] }
@@ -404,8 +424,8 @@ const previousMonth = [
         <div className="toast-success" role="status">
           <span className="toast-check">✓</span>
           <div>
-            <strong>{toast === 'income' ? '수입 등록 완료!' : toast === 'income-edit' ? '수입 수정 완료!' : toast === 'expense-edit' ? '지출 수정 완료!' : '지출 등록 완료!'}</strong>
-            <p>{toast === 'income' ? '수입 내역이 정상적으로 등록되었습니다.' : toast === 'income-edit' ? '수입 내역이 정상적으로 수정되었습니다.' : toast === 'expense-edit' ? '지출 내역이 정상적으로 수정되었습니다.' : '지출 내역이 정상적으로 등록되었습니다.'}</p>
+            <strong>{toast === 'income' ? '수입 등록 완료!' : toast === 'income-edit' ? '수입 수정 완료!' : toast === 'expense-edit' ? '지출 수정 완료!' : toast === 'photo-import' ? '사진 인식 지출 등록 완료!' : '지출 등록 완료!'}</strong>
+            <p>{toast === 'income' ? '수입 내역이 정상적으로 등록되었습니다.' : toast === 'income-edit' ? '수입 내역이 정상적으로 수정되었습니다.' : toast === 'expense-edit' ? '지출 내역이 정상적으로 수정되었습니다.' : toast === 'photo-import' ? '선택한 카드·계좌 거래가 지출 내역에 추가되었습니다.' : '지출 내역이 정상적으로 등록되었습니다.'}</p>
           </div>
         </div>
       )}
@@ -532,6 +552,12 @@ const previousMonth = [
                 <button className="v6-expand-trigger" type="button" aria-expanded={expenseFormOpen} onClick={() => setExpenseFormOpen(open => !open)}>
                   {expenseFormOpen ? '지출 등록창 접기 ▲' : '＋ 새 지출 등록'}
                 </button>
+                <button className="v6-photo-open-trigger" type="button" aria-expanded={photoImportOpen} onClick={() => setPhotoImportOpen(open => !open)}>
+                  {photoImportOpen ? '📷 사진 등록창 접기 ▲' : '📷 사진으로 지출 등록'}
+                </button>
+                {photoImportOpen && (
+                  <PhotoExpenseImport existingExpenses={items} onImport={importExpensesFromPhoto} onClose={() => setPhotoImportOpen(false)} />
+                )}
                 {expenseFormOpen && (
                   <section className="expense-form"><h2>💸 지출 등록하기</h2>
                     <form onSubmit={addExpense}>
