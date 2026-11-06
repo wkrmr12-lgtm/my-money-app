@@ -148,6 +148,13 @@ async function readCardLayoutWithFallback(worker, file, data, rawText, onStep) {
 function PhotoExpenseImport({ existingExpenses = [], onImport, onClose }) {
   const fileInput = useRef(null)
   const rowElements = useRef({})
+  const progressTargetRef = useRef(null)
+  const resultsTargetRef = useRef(null)
+  const scrollToTarget = target => {
+    if (!target) return
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' })
+  }
   const [file, setFile] = useState(null)
   const [previewUrl, setPreviewUrl] = useState('')
   const [busy, setBusy] = useState(false)
@@ -168,6 +175,19 @@ function PhotoExpenseImport({ existingExpenses = [], onImport, onClose }) {
     setPreviewUrl(url)
     return () => URL.revokeObjectURL(url)
   }, [file])
+
+  // 사진을 고르면 진행 상태를, 인식이 끝나면 거래 목록을 보여 줍니다.
+  useEffect(() => {
+    if (!busy) return undefined
+    const timer = window.setTimeout(() => scrollToTarget(progressTargetRef.current), 80)
+    return () => window.clearTimeout(timer)
+  }, [busy])
+
+  useEffect(() => {
+    if (rows.length === 0 || busy) return undefined
+    const timer = window.setTimeout(() => scrollToTarget(resultsTargetRef.current), 120)
+    return () => window.clearTimeout(timer)
+  }, [rows.length, busy])
 
   function updateRow(id, values) {
     setSubmitFeedback(null)
@@ -374,7 +394,7 @@ function PhotoExpenseImport({ existingExpenses = [], onImport, onClose }) {
   }
 
   return (
-    <section className="v6-photo-import-panel" aria-label="사진으로 지출 등록">
+    <section id="v6-photo-entry" className="v6-photo-import-panel" aria-label="사진으로 지출 등록">
       <div className="v6-photo-head">
         <div>
           <h3>📷 사진으로 지출 등록</h3>
@@ -401,19 +421,21 @@ function PhotoExpenseImport({ existingExpenses = [], onImport, onClose }) {
         <small>PNG · JPG · WEBP (최대 15MB)</small>
       </button>
       <p className="v6-photo-hint">사진 속 글자를 기기에서 분석합니다. 최초 실행 시 한글 인식 모델을 다운로드하므로 인터넷 연결이 필요해요.</p>
-      {previewUrl && <img className="v6-photo-preview" src={previewUrl} alt="사용자가 선택한 결제 내역 사진 미리보기" />}
       {busy && (
-        <div className="v6-photo-progress" role="status" aria-live="polite">
+        <div ref={progressTargetRef} className="v6-photo-progress v6-photo-progress-active" role="status" aria-live="polite" aria-busy="true">
+          <strong>🔎 거래내역을 인식하고 있어요</strong>
           <span>{step} {progress ? `${progress}%` : ''}</span>
           <div className="v6-photo-progress-track"><div style={{width:`${progress}%`}} /></div>
+          <small>분석이 끝나면 인식된 거래 목록으로 자동 이동해요.</small>
         </div>
       )}
       {error && <p className="v6-photo-error" role="alert">{error}</p>}
+      {previewUrl && <img className="v6-photo-preview" src={previewUrl} alt="사용자가 선택한 결제 내역 사진 미리보기" />}
       {englishNotice && <p className="v6-photo-notice" role="status">🔎 {englishNotice}</p>}
       {layoutNotice && <p className="v6-photo-notice" role="status">📋 {layoutNotice}</p>}
 
       {rows.length > 0 && (
-        <div className="v6-photo-results">
+        <div ref={resultsTargetRef} className="v6-photo-results">
           <div className="v6-photo-results-head">
             <h4>인식된 거래 {rows.length}건</h4>
             <span>사용처·금액·날짜를 꼭 확인하세요</span>

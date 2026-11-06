@@ -2488,3 +2488,156 @@
   .mymoney-v6 .calendar-grid { gap: 3px; }
   .mymoney-v6 .calendar-day small { font-size: 9px; }
 }
+
+
+/* MyMoney 모바일 실사용 개선: 등록 버튼, 명확한 저장 상태, 이동 위치 */
+.mymoney-v6 #v6-income-entry,
+.mymoney-v6 #v6-expense-entry,
+.mymoney-v6 #v6-photo-entry,
+.mymoney-v6 .v6-photo-progress-active,
+.mymoney-v6 .v6-photo-results {
+  scroll-margin-top: 18px;
+  scroll-margin-bottom: 110px;
+}
+.mymoney-v6 .v6-quick-actions button,
+.mymoney-v6 .v6-expand-trigger {
+  background: #1d4ed8;
+  color: #fff;
+  box-shadow: 0 4px 13px rgba(29,78,216,.19);
+}
+.mymoney-v6 .v6-quick-actions button:nth-child(2) { background: #0369a1; }
+.mymoney-v6 :is(.v6-quick-actions button,.v6-expand-trigger,.v6-photo-open-trigger):focus-visible,
+.mymoney-v6 .mymoney-budget-save-btn:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 3px;
+}
+.mymoney-v6 .v6-photo-progress-active {
+  display: grid;
+  gap: 8px;
+  border: 1px solid #93c5fd;
+  background: #eff6ff;
+  color: #1e40af;
+  border-radius: 13px;
+  padding: 16px;
+}
+.mymoney-v6 .v6-photo-progress-active strong { font-size: 15px; }
+.mymoney-v6 .v6-photo-progress-active small { font-size: 12px; color: #365f96; }
+.mymoney-v6 .v6-photo-progress-active .v6-photo-progress-track { margin: 3px 0; }
+.mymoney-v6 .mymoney-budget-save-form { margin-bottom: 20px; }
+.mymoney-v6 .mymoney-budget-save-form .budget-input { margin-bottom: 12px; }
+.mymoney-v6 .mymoney-budget-save-btn {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 16px;
+  color: #fff;
+  background: #1d4ed8;
+  border: none;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 750;
+  cursor: pointer;
+}
+.mymoney-v6 .mymoney-budget-save-btn:disabled { background: #64748b; cursor: default; }
+.mymoney-v6 .mymoney-budget-status { min-height: 24px; margin: 9px 0 0; font-size: 13px; line-height: 1.6; }
+.mymoney-v6 .mymoney-budget-status.is-unsaved { color: #9a3412; }
+.mymoney-v6 .mymoney-budget-status.is-saved { color: #166534; }
+
+/* 시스템 다크모드: 앱 전체를 검은색으로만 만들지 않고 카드와 CTA의 명도 대비 확보 */
+@media (prefers-color-scheme: dark) {
+  .app.mymoney-v6 {
+    color-scheme: dark;
+    color: #e7eefb;
+    background: #101c2e;
+  }
+  .mymoney-v6 .v6-shell,
+  .mymoney-v6 .v6-main-column,
+  .mymoney-v6 .v6-page-content { background: #101c2e; }
+  .mymoney-v6 .v6-topbar,
+  .mymoney-v6 .v6-sidebar { background: #172e4d; }
+  .mymoney-v6 .v6-page-heading h2,
+  .mymoney-v6 :is(.v6-card,.v6-inline-entry,.expense-form,.income-entry,.income-panel,
+    .calendar-panel,.calendar-detail,.budget-panel,.finance-chart,.spending-analysis,
+    .category-analysis,.v6-photo-import-panel) :is(h2,h3,h4),
+  .mymoney-v6 .v6-card h3 { color: #f1f5ff; }
+  .mymoney-v6 :is(.v6-card,.v6-inline-entry,.expense-form,.income-entry,.income-panel,
+    .calendar-panel,.calendar-detail,.budget-panel,.finance-chart,.spending-analysis,
+    .category-analysis,.v6-photo-import-panel) {
+    color: #e7eefb;
+    background: #1c2c43;
+    border-color: #38516f;
+  }
+  .mymoney-v6 .v6-balance-card,
+  .mymoney-v6 .budget-stats > div { background: #29415d; }
+  .mymoney-v6 .v6-balance-card strong { color: #f1f5ff; }
+  .mymoney-v6 .v6-income { background: #203c61; color: #a8ceff; }
+  .mymoney-v6 .v6-expense { background: #4a2c42; color: #ffcad7; }
+  .mymoney-v6 :is(.v6-summary-card,.v6-balance-card) span,
+  .mymoney-v6 :is(.v6-card,.v6-photo-import-panel) p,
+  .mymoney-v6 :is(.v6-card,.v6-photo-import-panel) small,
+  .mymoney-v6 .v6-section-head span,
+  .mymoney-v6 .budget-panel label,
+  .mymoney-v6 .budget-stats span { color: #c0cde1; }
+  .mymoney-v6 :is(input:not([type="checkbox"]),textarea,select) {
+    background: #253b55;
+    border-color: #617b9c;
+    color: #f1f5ff;
+    caret-color: #fff;
+  }
+  .mymoney-v6 :is(input,textarea)::placeholder { color: #b5c6dd; opacity: 1; }
+  .mymoney-v6 .v6-quick-actions button,
+  .mymoney-v6 .v6-expand-trigger,
+  .mymoney-v6 .mymoney-budget-save-btn:not(:disabled) {
+    background: #2463df;
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(0,0,0,.16);
+  }
+  .mymoney-v6 .v6-quick-actions button:nth-child(2) { background: #0978bc; }
+  .mymoney-v6 .v6-photo-open-trigger,
+  .mymoney-v6 .v6-photo-select { background: #23446b; color: #e8f3ff; border-color: #769ed0; }
+  .mymoney-v6 .v6-photo-select small,
+  .mymoney-v6 .v6-photo-notice,
+  .mymoney-v6 .v6-photo-results-head span { color: #cad9ee; }
+  .mymoney-v6 .v6-photo-progress-active { background: #1b4169; color: #e1efff; border-color: #83b2ec; }
+  .mymoney-v6 .v6-photo-progress-active small { color: #cbdef6; }
+  .mymoney-v6 .v6-photo-results-head h4 { color: #f1f5ff; }
+  .mymoney-v6 .v6-photo-result { background: #24374f; border-color: #536f90; }
+  .mymoney-v6 .mymoney-budget-status.is-unsaved { color: #fdba74; }
+  .mymoney-v6 .mymoney-budget-status.is-saved { color: #86efac; }
+  .mymoney-v6 .mymoney-budget-save-btn:disabled { background: #435e80; color: #dbeafe; }
+  .mymoney-v6 .v6-recent-item { border-color: #3c5572; }
+  .mymoney-v6 .v6-recent-item small { color: #cbd5e1; }
+  .mymoney-v6 .v6-green { color: #86efac; }
+  .mymoney-v6 .v6-red { color: #fda4af; }
+  .mymoney-v6 .v6-bottom-nav { background: #172a42; border-color: #3c5572; }
+  .mymoney-v6 .v6-bottom-nav button { color: #cbd5e1; }
+  .mymoney-v6 .v6-bottom-nav button.active { background: #25508a; color: #fff; }
+  .mymoney-v6 .v6-month-picker { color: #cbd5e1; }
+}
+
+
+/* MyMoney 모바일 개선 5: 홈의 수입/지출 CTA를 요약 카드의 의미색과 통일.
+   기존 4가지 개선(다크모드, 자동 이동, OCR 진행, 예산 저장) 모두 유지. */
+.mymoney-v6 .v6-quick-actions button:first-child {
+  background: #1d4ed8; /* 수입: 총수입 카드와 같은 파란 계열 */
+  color: #fff;
+  box-shadow: 0 5px 15px rgba(29, 78, 216, 0.24);
+}
+.mymoney-v6 .v6-quick-actions button:nth-child(2) {
+  background: #be123c; /* 지출: 총지출 카드와 같은 붉은 계열 */
+  color: #fff;
+  box-shadow: 0 5px 15px rgba(190, 18, 60, 0.22);
+}
+@media (prefers-color-scheme: dark) {
+  .mymoney-v6 .v6-quick-actions button:first-child {
+    background: #2563eb;
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(20, 58, 132, 0.35);
+  }
+  .mymoney-v6 .v6-quick-actions button:nth-child(2) {
+    background: #be123c;
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(113, 14, 44, 0.40);
+  }
+}

@@ -274,6 +274,44 @@ const previousMonth = [
   const [incomeFormOpen, setIncomeFormOpen] = useState(false)
   const [expenseFormOpen, setExpenseFormOpen] = useState(false)
   const [photoImportOpen, setPhotoImportOpen] = useState(false)
+  const [entryScrollRequest, setEntryScrollRequest] = useState(null)
+
+  // 화면 전환/등록창 열기가 React에 반영된 다음 실제 입력창 위치로 이동합니다.
+  useEffect(() => {
+    if (!entryScrollRequest) return undefined
+    const timer = window.setTimeout(() => {
+      const element = document.getElementById(entryScrollRequest.target)
+      if (element) {
+        const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+        element.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' })
+      }
+      setEntryScrollRequest(null)
+    }, 60)
+    return () => window.clearTimeout(timer)
+  }, [entryScrollRequest, activeTab, incomeFormOpen, expenseFormOpen, photoImportOpen])
+
+  function openEntry(tab) {
+    setActiveTab(tab)
+    if (tab === 'income') {
+      setIncomeFormOpen(true)
+      setEntryScrollRequest({ target: 'v6-income-entry' })
+    } else if (tab === 'expense') {
+      setExpenseFormOpen(true)
+      setEntryScrollRequest({ target: 'v6-expense-entry' })
+    }
+  }
+
+  function toggleEntry(tab) {
+    const currentlyOpen = tab === 'income' ? incomeFormOpen : expenseFormOpen
+    if (tab === 'income') setIncomeFormOpen(!currentlyOpen)
+    else setExpenseFormOpen(!currentlyOpen)
+    if (!currentlyOpen) setEntryScrollRequest({ target: tab === 'income' ? 'v6-income-entry' : 'v6-expense-entry' })
+  }
+
+  function togglePhotoImport() {
+    setPhotoImportOpen(open => !open)
+    if (!photoImportOpen) setEntryScrollRequest({ target: 'v6-photo-entry' })
+  }
   // 저장은 '메모 저장' 버튼을 누를 때만 실행합니다. 기존 글을 입력만으로 덮어쓰지 않습니다.
   const [memoEntries, setMemoEntries] = useState(() => {
     try { return readMemoEntries() } catch { return [] }
@@ -467,8 +505,8 @@ const previousMonth = [
                 </div>
                 <section className="v6-balance-card"><span>이번 달 잔액</span><strong>{krw(monthlyBalance)}</strong></section>
                 <div className="v6-quick-actions">
-                  <button type="button" onClick={() => {goTo('income');setIncomeFormOpen(true)}}>＋ 수입 등록</button>
-                  <button type="button" onClick={() => {goTo('expense');setExpenseFormOpen(true)}}>＋ 지출 등록</button>
+                  <button type="button" onClick={() => openEntry('income')}>＋ 수입 등록</button>
+                  <button type="button" onClick={() => openEntry('expense')}>＋ 지출 등록</button>
                 </div>
                 <section className="v6-card">
                   <div className="v6-section-head"><h3>최근 거래</h3><span>선택한 달 · 최근 3건</span></div>
@@ -524,11 +562,11 @@ const previousMonth = [
             {activeTab === 'income' && (
               <div className="v6-stack v6-income-page">
                 <div className="v6-summary-card v6-income"><span>이번 달 총수입</span><strong>{krw(monthlyIncomeTotal)}</strong></div>
-                <button className="v6-expand-trigger" type="button" aria-expanded={incomeFormOpen} onClick={() => setIncomeFormOpen(open => !open)}>
+                <button className="v6-expand-trigger" type="button" aria-expanded={incomeFormOpen} onClick={() => toggleEntry('income')}>
                   {incomeFormOpen ? '수입 등록창 접기 ▲' : '＋ 새 수입 등록'}
                 </button>
                 {incomeFormOpen && (
-                  <section className="v6-form-wrap v6-inline-entry">
+                  <section id="v6-income-entry" className="v6-form-wrap v6-inline-entry">
                     <h3>수입 등록하기</h3>
                     <form className="income-form" onSubmit={addIncome}>
                       <label className="income-date-label">수입 날짜
@@ -555,17 +593,17 @@ const previousMonth = [
             {activeTab === 'expense' && (
               <div className="v6-stack v6-expense-page">
                 <div className="v6-summary-card v6-expense"><span>이번 달 총지출</span><strong>{krw(monthlyTotal)}</strong></div>
-                <button className="v6-expand-trigger" type="button" aria-expanded={expenseFormOpen} onClick={() => setExpenseFormOpen(open => !open)}>
+                <button className="v6-expand-trigger" type="button" aria-expanded={expenseFormOpen} onClick={() => toggleEntry('expense')}>
                   {expenseFormOpen ? '지출 등록창 접기 ▲' : '＋ 새 지출 등록'}
                 </button>
-                <button className="v6-photo-open-trigger" type="button" aria-expanded={photoImportOpen} onClick={() => setPhotoImportOpen(open => !open)}>
+                <button className="v6-photo-open-trigger" type="button" aria-expanded={photoImportOpen} onClick={togglePhotoImport}>
                   {photoImportOpen ? '📷 사진 등록창 접기 ▲' : '📷 사진으로 지출 등록'}
                 </button>
                 {photoImportOpen && (
                   <PhotoExpenseImport existingExpenses={items} onImport={importExpensesFromPhoto} onClose={() => setPhotoImportOpen(false)} />
                 )}
                 {expenseFormOpen && (
-                  <section className="expense-form"><h2>💸 지출 등록하기</h2>
+                  <section id="v6-expense-entry" className="expense-form"><h2>💸 지출 등록하기</h2>
                     <form onSubmit={addExpense}>
                       <label className="expense-date-label">지출 날짜
                         <input type="date" value={expenseDate} onChange={e => {
