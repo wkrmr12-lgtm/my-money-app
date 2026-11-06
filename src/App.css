@@ -1854,3 +1854,637 @@
   .mymoney-v6 .v6-photo-fields .v6-photo-wide { grid-column:auto; }
   .mymoney-v6 .v6-photo-result { padding:13px; }
 }
+
+/* ===============================================================
+   MyMoney UI polish v6.1 - appearance-only update, 2026-11
+   이 구간은 디자인만 수정합니다. 저장/등록/메모/OCR 로직은 변경하지 않습니다.
+   =============================================================== */
+.app.mymoney-v6 {
+  --mm-ink: #172b44;
+  --mm-subtle: #63758c;
+  --mm-blue: #2563eb;
+  --mm-navy: #122b49;
+  --mm-border: #e2e8f1;
+  --mm-surface: #ffffff;
+  --mm-background: #f5f7fb;
+  font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo',
+    'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.58;
+  letter-spacing: -0.025em;
+  color: var(--mm-ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  word-break: keep-all;
+}
+
+.mymoney-v6 *, .mymoney-v6 *::before, .mymoney-v6 *::after {
+  box-sizing: border-box;
+}
+
+.mymoney-v6 .v6-shell {
+  background: var(--mm-background);
+  grid-template-columns: 236px minmax(0, 1fr);
+}
+
+/* Desktop navigation / header */
+.mymoney-v6 .v6-sidebar {
+  background: linear-gradient(185deg, #142f50 0%, #10253e 100%);
+  padding: 31px 17px;
+}
+.mymoney-v6 .v6-brand {
+  padding: 1px 13px 34px;
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: -0.06em;
+}
+.mymoney-v6 .v6-brand small {
+  color: #b7c9df;
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: -0.015em;
+}
+.mymoney-v6 .v6-side-links { gap: 5px; }
+.mymoney-v6 .v6-side-links button {
+  min-height: 49px;
+  padding: 12px 15px;
+  gap: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  transition: background .17s ease, color .17s ease;
+}
+.mymoney-v6 .v6-side-links button span { font-size: 21px; width: 26px; }
+.mymoney-v6 .v6-side-links button.active {
+  background: #345a85;
+  box-shadow: inset 3px 0 0 #9cc5ff;
+}
+.mymoney-v6 .v6-topbar {
+  background: #142f50;
+  padding: 27px clamp(22px, 4vw, 54px);
+}
+.mymoney-v6 .v6-topbar h1 {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  line-height: 1.25;
+}
+.mymoney-v6 .v6-topbar p { margin-top: 6px; color: #c8d8eb; font-size: 13px; }
+.mymoney-v6 .v6-version { color: #dae6f4; font-size: 12px; white-space: nowrap; }
+.mymoney-v6 .v6-page-content {
+  width: 100%;
+  max-width: 1140px;
+  padding: 32px clamp(20px, 3.5vw, 48px) 90px;
+}
+.mymoney-v6 .v6-page-heading { margin-bottom: 25px; }
+.mymoney-v6 .v6-page-heading h2 {
+  color: #172b44;
+  font-size: clamp(22px, 2vw, 27px);
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: -0.055em;
+}
+.mymoney-v6 .v6-stack { gap: 18px; }
+.mymoney-v6 .v6-stack > section { margin-bottom: 0; }
+
+/* Dashboard cards & money hierarchy */
+.mymoney-v6 .v6-summary-grid { gap: 16px; }
+.mymoney-v6 .v6-summary-card {
+  min-width: 0;
+  padding: 24px 25px;
+  border-radius: 18px;
+  gap: 11px;
+  box-shadow: 0 2px 12px rgba(17, 39, 68, .025);
+}
+.mymoney-v6 .v6-summary-card.v6-income {
+  background: #eaf2ff;
+  border: 1px solid #d5e5fc;
+  color: #1c59c7;
+}
+.mymoney-v6 .v6-summary-card.v6-expense {
+  background: #fff0f3;
+  border: 1px solid #ffe0e7;
+  color: #b72d52;
+}
+.mymoney-v6 .v6-summary-card span,
+.mymoney-v6 .v6-balance-card span {
+  color: #5d7189;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.mymoney-v6 .v6-summary-card strong {
+  font-size: clamp(22px, 2.6vw, 31px);
+  font-weight: 800;
+  line-height: 1.24;
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.mymoney-v6 .v6-balance-card {
+  min-width: 0;
+  padding: 26px;
+  gap: 9px;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid var(--mm-border);
+  box-shadow: 0 4px 18px rgba(21, 43, 68, .035);
+}
+.mymoney-v6 .v6-balance-card strong {
+  color: #172f50;
+  font-size: clamp(29px, 3.5vw, 40px);
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.mymoney-v6 .v6-card,
+.mymoney-v6 .v6-inline-entry {
+  background: var(--mm-surface);
+  border: 1px solid var(--mm-border);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 3px 16px rgba(23, 43, 68, .025);
+}
+.mymoney-v6 .v6-card h3,
+.mymoney-v6 .v6-inline-entry h3 {
+  color: var(--mm-ink);
+  font-size: 17px;
+  line-height: 1.4;
+  letter-spacing: -0.035em;
+  font-weight: 750;
+}
+.mymoney-v6 .v6-card p { line-height: 1.7; }
+.mymoney-v6 .v6-section-head { gap: 14px; margin-bottom: 15px; }
+.mymoney-v6 .v6-section-head span { font-size: 12px; color: #708299; }
+.mymoney-v6 .v6-recent-item { padding: 16px 0; gap: 14px; }
+.mymoney-v6 .v6-recent-item strong,
+.mymoney-v6 .category-amount,
+.mymoney-v6 .income-item strong,
+.mymoney-v6 .expense-item strong {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.035em;
+}
+.mymoney-v6 .v6-recent-item small { font-size: 12px; }
+
+/* Forms: consistent height, border, and readable labels */
+.mymoney-v6 :is(input:not([type='checkbox']):not([type='radio']), select, textarea) {
+  font-family: inherit;
+  font-size: 15px;
+  letter-spacing: -0.015em;
+  color: var(--mm-ink);
+  line-height: 1.5;
+}
+.mymoney-v6 :is(input:not([type='checkbox']):not([type='radio']), select, textarea):focus-visible {
+  outline: 2px solid #8bbcff;
+  outline-offset: 1px;
+  border-color: var(--mm-blue);
+}
+.mymoney-v6 :is(.v6-month-picker input, .v6-transaction-search,
+  .v6-search-row select, .v6-memo, .v6-entry-memo-label textarea,
+  .v6-form-wrap input, .expense-form input, .expense-form select,
+  .income-form input, .calendar-edit-form input,
+  .income-edit-form input) {
+  border-color: #cfdbea;
+  border-radius: 11px;
+  background: #fff;
+}
+.mymoney-v6 :is(.v6-transaction-search, .v6-search-row select,
+  .v6-form-wrap input, .expense-form input, .expense-form select,
+  .income-form input, .calendar-edit-form input, .income-edit-form input) {
+  min-height: 47px;
+}
+.mymoney-v6 .v6-memo { padding: 14px 15px; line-height: 1.7; min-height: 114px; }
+.mymoney-v6 .v6-month-picker { color: #62748a; font-size: 12px; font-weight: 600; }
+.mymoney-v6 .v6-month-picker input { min-height: 44px; padding: 9px 12px; }
+.mymoney-v6 .v6-entry-memo-label,
+.mymoney-v6 .v6-memo-month-label { color: #405671; font-size: 14px; font-weight: 700; }
+.mymoney-v6 .v6-memo-description { color: var(--mm-subtle); line-height: 1.7; }
+
+/* Buttons & small interactive elements */
+.mymoney-v6 :is(button, input, select, textarea) { -webkit-tap-highlight-color: transparent; }
+.mymoney-v6 button { font-family: inherit; letter-spacing: -0.025em; }
+.mymoney-v6 :is(button, a):focus-visible {
+  outline: 3px solid #85b6ff;
+  outline-offset: 3px;
+}
+.mymoney-v6 .v6-quick-actions button,
+.mymoney-v6 .v6-expand-trigger {
+  min-height: 53px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+  padding: 14px 16px;
+  background: #183858;
+}
+.mymoney-v6 .v6-quick-actions button:nth-child(2) { background: #2d69e6; }
+.mymoney-v6 .v6-expand-trigger { width: 100%; }
+.mymoney-v6 .v6-photo-open-trigger {
+  width: 100%;
+  min-height: 53px;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.mymoney-v6 .v6-filter-row { gap: 9px; }
+.mymoney-v6 .v6-filter-row button {
+  min-height: 43px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+.mymoney-v6 .v6-filter-row button.is-active {
+  background: #1c4068;
+  border-color: #1c4068;
+}
+.mymoney-v6 .v6-memo-actions { gap: 9px; }
+.mymoney-v6 :is(.v6-memo-save, .v6-memo-edit, .v6-memo-delete) {
+  min-height: 42px;
+  padding: 10px 15px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+.mymoney-v6 .v6-memo-archive-toggle {
+  min-height: 49px;
+  background: #f4f7fb;
+  border-color: #e0e8f2;
+  padding: 13px 16px;
+  margin-top: 18px;
+}
+.mymoney-v6 .v6-memo-record {
+  padding: 16px;
+  border-radius: 12px;
+  gap: 14px;
+}
+.mymoney-v6 .v6-memo-record-main p { line-height: 1.6; }
+.mymoney-v6 .v6-transaction-search { padding: 12px 14px; }
+.mymoney-v6 .v6-search-row { gap: 10px; }
+.mymoney-v6 .toast-success {
+  border-radius: 14px;
+  box-shadow: 0 12px 35px rgba(12, 40, 70, .14);
+}
+
+/* Charts & records: comfortable rhythm without changing grid behavior */
+.mymoney-v6 :is(.income-panel, .calendar-panel, .category-analysis,
+  .budget-panel, .finance-chart, .spending-analysis) {
+  letter-spacing: -0.02em;
+}
+.mymoney-v6 .income-item,
+.mymoney-v6 .expense-item { gap: 13px; }
+.mymoney-v6 .v6-expense-info strong { font-size: 14px; line-height: 1.45; }
+.mymoney-v6 .v6-transaction-memo { line-height: 1.55; }
+
+@media (hover: hover) {
+  .mymoney-v6 .v6-quick-actions button:hover,
+  .mymoney-v6 .v6-expand-trigger:hover { filter: brightness(1.08); }
+  .mymoney-v6 .v6-card { transition: box-shadow .18s ease; }
+}
+
+@media (max-width: 800px) {
+  .mymoney-v6 .v6-shell { display: block; }
+  .mymoney-v6 .v6-topbar { padding: 21px 19px; }
+  .mymoney-v6 .v6-topbar h1 { font-size: 23px; }
+  .mymoney-v6 .v6-page-content {
+    padding: 23px 16px calc(106px + env(safe-area-inset-bottom));
+  }
+  .mymoney-v6 .v6-page-heading { gap: 14px; margin-bottom: 20px; }
+  .mymoney-v6 .v6-page-heading h2 { font-size: 22px; }
+  .mymoney-v6 .v6-summary-grid { gap: 12px; }
+  .mymoney-v6 .v6-summary-card { padding: 18px; gap: 8px; }
+  .mymoney-v6 .v6-summary-card strong { font-size: clamp(18px, 4.1vw, 27px); }
+  .mymoney-v6 .v6-balance-card { padding: 21px; }
+  .mymoney-v6 .v6-card, .mymoney-v6 .v6-inline-entry { padding: 19px; }
+  .mymoney-v6 .v6-bottom-nav {
+    background: rgba(255, 255, 255, .97);
+    border-top: 1px solid #e2e9f2;
+    padding: 8px 8px calc(7px + env(safe-area-inset-bottom));
+    box-shadow: 0 -6px 24px rgba(22, 44, 69, .05);
+  }
+  .mymoney-v6 .v6-bottom-nav button {
+    min-height: 51px;
+    padding: 7px 1px 6px;
+    gap: 3px;
+    font-size: 12px;
+  }
+  .mymoney-v6 .v6-bottom-nav button span { font-size: 21px; }
+  .mymoney-v6 .v6-bottom-nav button small { font-size: 11px; letter-spacing: -0.025em; }
+  .mymoney-v6 .v6-bottom-nav button.active { color: #1d5dd1; background: #eaf2ff; }
+}
+
+@media (max-width: 460px) {
+  .mymoney-v6 .v6-stack { gap: 14px; }
+  .mymoney-v6 .v6-page-content {
+    padding: 18px 13px calc(102px + env(safe-area-inset-bottom));
+  }
+  .mymoney-v6 .v6-topbar { padding: 19px 15px; }
+  .mymoney-v6 .v6-page-heading h2 { font-size: 20px; }
+  .mymoney-v6 .v6-summary-grid { gap: 9px; }
+  .mymoney-v6 .v6-summary-card { padding: 14px 12px; border-radius: 14px; }
+  .mymoney-v6 .v6-summary-card span { font-size: 12px; }
+  .mymoney-v6 .v6-summary-card strong {
+    font-size: clamp(15px, 4.05vw, 19px);
+    line-height: 1.35;
+    letter-spacing: -0.05em;
+  }
+  .mymoney-v6 .v6-balance-card { padding: 19px 17px; }
+  .mymoney-v6 .v6-balance-card strong { font-size: clamp(27px, 7vw, 34px); }
+  .mymoney-v6 .v6-card, .mymoney-v6 .v6-inline-entry { padding: 16px; border-radius: 15px; }
+  .mymoney-v6 .v6-quick-actions { gap: 9px; }
+  .mymoney-v6 .v6-quick-actions button { font-size: 13px; padding: 12px 8px; }
+  .mymoney-v6 :is(input:not([type='checkbox']):not([type='radio']), select, textarea) {
+    font-size: 16px; /* iOS 입력 포커스 시 자동 확대 방지 */
+  }
+  .mymoney-v6 .v6-memo-record { gap: 10px; padding: 13px; }
+  .mymoney-v6 .v6-memo-record-actions { align-self: flex-end; }
+  .mymoney-v6 .v6-memo-archive-toggle { padding: 12px; font-size: 13px; }
+  .mymoney-v6 .v6-bottom-nav button { min-height: 49px; }
+  .mymoney-v6 .toast-success {
+    left: 12px;
+    right: 12px;
+    top: 12px;
+    padding: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mymoney-v6 *, .mymoney-v6 *::before, .mymoney-v6 *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+  }
+}
+
+
+/* =============================================================
+   MyMoney v6.0 · UI polish / 모바일 최종 조정
+   표시 및 배치만 변경. 저장·백업·OCR·알림 관련 로직은 변경 없음.
+   ============================================================= */
+
+/* 숫자는 같은 폭으로, 텍스트는 넘치지 않도록 */
+.mymoney-v6 :is(.v6-summary-card strong, .v6-balance-card strong,
+  .v6-recent-item > strong, .income-item > strong, .calendar-detail strong,
+  .category-amount) {
+  font-variant-numeric: tabular-nums;
+}
+.mymoney-v6 .v6-page-content,
+.mymoney-v6 .v6-main-column,
+.mymoney-v6 .v6-stack,
+.mymoney-v6 .v6-card,
+.mymoney-v6 :is(.income-panel, .calendar-panel, .finance-chart,
+  .budget-panel, .spending-analysis, .category-analysis) {
+  min-width: 0;
+}
+.mymoney-v6 .v6-page-content { max-width: 1100px; }
+.mymoney-v6 .v6-card { border-color: #dde6f1; }
+.mymoney-v6 .v6-summary-card { min-width: 0; }
+.mymoney-v6 .v6-summary-card strong,
+.mymoney-v6 .v6-balance-card strong { line-height: 1.22; }
+
+/* 최근 거래: 긴 상호명이 금액을 밀어내지 않도록 */
+.mymoney-v6 .v6-recent-item { min-width: 0; }
+.mymoney-v6 .v6-recent-item > div {
+  min-width: 0;
+  flex: 1 1 auto;
+  gap: 3px;
+}
+.mymoney-v6 .v6-recent-item > div > strong {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #203650;
+}
+.mymoney-v6 .v6-recent-item > div > small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  color: #71849d;
+}
+.mymoney-v6 .v6-recent-item > strong {
+  flex: 0 0 auto;
+  max-width: 54%;
+  text-align: right;
+  white-space: nowrap;
+  font-size: clamp(13px, 2vw, 16px);
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+/* 수입 목록: 이름, 날짜, 금액 사이 시각적 위계 */
+.mymoney-v6 .income-list h3 { margin: 0 0 12px; font-size: 16px; }
+.mymoney-v6 .income-list .income-item { padding: 15px 0; }
+.mymoney-v6 .income-list .income-item > div { min-width: 0; }
+.mymoney-v6 .income-list .income-item > div > strong {
+  display: block;
+  line-height: 1.4;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+.mymoney-v6 .income-list .income-item > div > p {
+  margin: 4px 0 0;
+  color: #71849d;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.mymoney-v6 .income-list .income-item > strong {
+  flex: 0 1 auto;
+  font-weight: 800;
+  white-space: nowrap;
+  color: #233e62;
+  text-align: right;
+}
+
+/* 지출 달력: 칸 크기를 균일하게, 숫자 노출을 안정적으로 */
+.mymoney-v6 .calendar-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.mymoney-v6 .calendar-day {
+  min-width: 0;
+  border-radius: 11px;
+  font-weight: 600;
+  overflow: hidden;
+}
+.mymoney-v6 .calendar-day.selected {
+  border-width: 2px;
+  background: #e5f0ff;
+  box-shadow: inset 0 0 0 1px rgba(37, 99, 235, .08);
+}
+.mymoney-v6 .calendar-day small {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  overflow-wrap: normal;
+  color: #1c5ed5;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.04em;
+}
+.mymoney-v6 .calendar-detail .calendar-expense > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+}
+.mymoney-v6 .calendar-detail .calendar-expense > strong {
+  font-weight: 800;
+}
+
+/* 설정: 알림/백업 카드와 제목의 수직 리듬 */
+.mymoney-v6 .v6-stack > .v6-card h3 { line-height: 1.5; }
+.mymoney-v6 .v6-stack > .v6-card p { margin-bottom: 0; }
+.mymoney-v6 .v6-stack :is(button, input, select, textarea) {
+  -webkit-tap-highlight-color: transparent;
+}
+.mymoney-v6 .v6-memo-record { min-width: 0; }
+.mymoney-v6 .v6-memo-record-main { min-width: 0; }
+
+/* 작은 화면: 배치 우선, 터치 영역 유지 */
+@media (max-width: 800px) {
+  .app.mymoney-v6 {
+    min-height: 100dvh;
+    background: #f5f7fb;
+  }
+  .mymoney-v6 .v6-topbar {
+    padding: 19px 18px;
+    min-height: 91px;
+  }
+  .mymoney-v6 .v6-topbar h1 { font-size: 24px; }
+  .mymoney-v6 .v6-topbar p { font-size: 12px; }
+  .mymoney-v6 .v6-page-content {
+    padding: 22px 15px calc(132px + env(safe-area-inset-bottom));
+  }
+  .mymoney-v6 .v6-page-heading { margin-bottom: 20px; gap: 14px; }
+  .mymoney-v6 .v6-page-heading h2 { font-size: 21px; }
+  .mymoney-v6 .v6-stack { gap: 16px; }
+  .mymoney-v6 .v6-summary-card { padding: 18px; gap: 7px; }
+  .mymoney-v6 .v6-summary-card strong {
+    font-size: clamp(18px, 4.3vw, 26px);
+    overflow-wrap: anywhere;
+  }
+  .mymoney-v6 .v6-balance-card { padding: 21px; }
+  .mymoney-v6 .v6-card { padding: 18px; }
+  .mymoney-v6 .v6-recent-item { padding: 13px 0; gap: 8px; }
+  .mymoney-v6 .v6-recent-item > strong { font-size: 14px; }
+  .mymoney-v6 .calendar-day { min-height: 60px; gap: 4px; padding: 8px 2px; }
+  .mymoney-v6 .calendar-day small { font-size: clamp(9px, 1.7vw, 11px); }
+  .mymoney-v6 .v6-bottom-nav {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 3px;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+    background: rgba(255, 255, 255, .98);
+    border-top: 1px solid #dee7f3;
+    box-shadow: 0 -6px 20px rgba(18, 44, 77, .08);
+  }
+  .mymoney-v6 .v6-bottom-nav button {
+    min-height: 60px;
+    border-radius: 13px;
+    padding: 7px 2px 6px;
+    gap: 3px;
+  }
+  .mymoney-v6 .v6-bottom-nav button span { font-size: 20px; line-height: 1.2; }
+  .mymoney-v6 .v6-bottom-nav button small { font-size: 11px; line-height: 1.25; }
+  .mymoney-v6 .v6-bottom-nav button.active {
+    background: #eaf1ff;
+    color: #205fd3;
+  }
+  .mymoney-v6 :is(.v6-memo-archive, #v6-memo-archive-list,
+    #income-edit-form, #expense-edit-form, .calendar-detail) {
+    scroll-margin-top: 16px;
+    scroll-margin-bottom: 110px;
+  }
+}
+
+@media (max-width: 600px) {
+  /* 화면 폭과 관계없이 2열 요약의 금액은 안전하게 줄 바꿈 */
+  .mymoney-v6 .v6-summary-grid { gap: 10px; }
+  .mymoney-v6 .v6-summary-card { border-radius: 15px; }
+  .mymoney-v6 .v6-summary-card strong { font-size: clamp(16px, 4.2vw, 22px); }
+  .mymoney-v6 .v6-balance-card strong { font-size: clamp(27px, 7vw, 35px); }
+
+  /* 수입: 한 줄에 이름/금액, 다음 줄에 수정/삭제 */
+  .mymoney-v6 .income-list .income-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 80px 62px;
+    grid-template-areas:
+      'info money money'
+      'info edit delete';
+    column-gap: 7px;
+    row-gap: 4px;
+    align-items: center;
+    padding: 13px 0;
+  }
+  .mymoney-v6 .income-list .income-item > div { grid-area: info; }
+  .mymoney-v6 .income-list .income-item > strong {
+    grid-area: money;
+    justify-self: end;
+    font-size: clamp(13px, 3.8vw, 16px);
+  }
+  .mymoney-v6 .income-list .income-item > button {
+    width: 100%;
+    min-height: 35px;
+    height: auto;
+    padding: 7px 6px;
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.35;
+    white-space: nowrap;
+  }
+  .mymoney-v6 .income-list .income-item > .income-edit-btn { grid-area: edit; }
+  .mymoney-v6 .income-list .income-item > button:not(.income-edit-btn) { grid-area: delete; }
+
+  .mymoney-v6 .calendar-panel { padding-inline: 15px; }
+  .mymoney-v6 .calendar-grid { gap: 4px; }
+  .mymoney-v6 .calendar-weekday { padding: 8px 0; font-size: 12px; }
+  .mymoney-v6 .calendar-day { min-height: 58px; padding: 7px 1px; gap: 3px; font-size: 13px; }
+  .mymoney-v6 .calendar-day small { font-size: clamp(9px, 2.5vw, 11px); }
+  .mymoney-v6 .calendar-panel h3 { margin: 12px 0; }
+  .mymoney-v6 .calendar-detail { margin-top: 17px; }
+  .mymoney-v6 .calendar-detail .calendar-expense { row-gap: 5px; }
+  .mymoney-v6 .calendar-detail .calendar-expense .calendar-edit-btn,
+  .mymoney-v6 .calendar-detail .calendar-expense .calendar-delete-btn {
+    font-size: 12px;
+    padding: 0 5px;
+    min-height: 39px;
+    height: 39px;
+  }
+}
+
+@media (max-width: 460px) {
+  .mymoney-v6 .v6-page-content {
+    padding: 18px 12px calc(128px + env(safe-area-inset-bottom));
+  }
+  .mymoney-v6 .v6-topbar { padding: 17px 15px; min-height: 88px; }
+  .mymoney-v6 .v6-page-heading h2 { font-size: 20px; }
+  .mymoney-v6 .v6-stack { gap: 14px; }
+  .mymoney-v6 .v6-summary-grid { gap: 8px; }
+  .mymoney-v6 .v6-summary-card { padding: 15px 12px; }
+  .mymoney-v6 .v6-summary-card strong { font-size: clamp(15px, 4vw, 19px); }
+  .mymoney-v6 .v6-card, .mymoney-v6 .v6-inline-entry { padding: 15px; }
+  .mymoney-v6 .v6-recent-item { gap: 6px; }
+  .mymoney-v6 .v6-recent-item > strong { font-size: clamp(12px, 3.4vw, 14px); max-width: 52%; }
+  .mymoney-v6 .v6-recent-item > div > strong { font-size: 13px; }
+  .mymoney-v6 .v6-quick-actions button { min-height: 49px; }
+  .mymoney-v6 .v6-bottom-nav { padding-inline: 7px; gap: 2px; }
+  .mymoney-v6 .v6-bottom-nav button { min-height: 59px; }
+}
+
+@media (max-width: 360px) {
+  .mymoney-v6 .income-list .income-item {
+    grid-template-columns: minmax(0,1fr) 70px 55px;
+  }
+  .mymoney-v6 .income-list .income-item > strong { font-size: 12px; }
+  .mymoney-v6 .calendar-panel { padding-inline: 12px; }
+  .mymoney-v6 .calendar-grid { gap: 3px; }
+  .mymoney-v6 .calendar-day small { font-size: 9px; }
+}

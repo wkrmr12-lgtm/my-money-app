@@ -9,6 +9,7 @@ import IncomePanel from './IncomePanel.jsx'
 import FinanceChart from './FinanceChart.jsx'
 import PhotoExpenseImport from './PhotoExpenseImport.jsx'
 import DataBackupPanel from './DataBackupPanel.jsx'
+import { DailyReminderRunner, DailyReminderPanel } from './DailyReminder.jsx'
 const categories = ['식비', '카페', '쇼핑', '교통', '생활', '기타']
 
 const categoryColors = {
@@ -420,6 +421,8 @@ const previousMonth = [
   )
 
   return (
+    <>
+    <DailyReminderRunner />
     <main className="app mymoney-v6">
       {toast && (
         <div className="toast-success" role="status">
@@ -607,6 +610,7 @@ const previousMonth = [
               <div className="v6-stack">
                 <section className="v6-card"><h3>앱 정보</h3><p>MyMoney v6.0 · 나의 스마트 가계부</p></section>
                 <section className="v6-card"><h3>화면 설정</h3><p>추후 테마 설정 기능이 추가될 예정이에요.</p></section>
+                <DailyReminderPanel />
                 <DataBackupPanel />
               </div>
             )}
@@ -621,6 +625,7 @@ const previousMonth = [
         </nav>
       </div>
     </main>
+    </>
   )
 }
 

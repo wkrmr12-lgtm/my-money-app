@@ -1,0 +1,29 @@
+/* 기존 MyMoney UI와 조화를 이루는 설정 페이지 알림 카드 */
+.mymoney-v6 .mymoney-reminder { display:grid; gap:18px; }
+.mymoney-v6 .mymoney-reminder__head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+.mymoney-v6 .mymoney-reminder__head h3 { margin:0 0 8px; }
+.mymoney-v6 .mymoney-reminder__head p { margin:0; color:#64748b; }
+.mymoney-v6 .mymoney-reminder__status { flex-shrink:0; border-radius:999px; padding:6px 10px; background:#f1f5f9; color:#64748b; font-size:12px; font-weight:700; }
+.mymoney-v6 .mymoney-reminder__status.is-on { background:#e7efff; color:#1d4ed8; }
+.mymoney-v6 .mymoney-reminder__toggle-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px; border:1px solid #e2e8f0; border-radius:14px; cursor:pointer; }
+.mymoney-v6 .mymoney-reminder__toggle-row span { display:grid; gap:4px; }
+.mymoney-v6 .mymoney-reminder__toggle-row strong { color:#172b4d; font-size:15px; }
+.mymoney-v6 .mymoney-reminder__toggle-row small { color:#64748b; font-size:12px; }
+.mymoney-v6 .mymoney-reminder__toggle-row input { accent-color:#2563eb; inline-size:24px; block-size:24px; flex-shrink:0; cursor:pointer; }
+.mymoney-v6 .mymoney-reminder__time-row { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; color:#334155; font-weight:700; font-size:14px; }
+.mymoney-v6 .mymoney-reminder__time-row input { border:1px solid #cbd5e1; border-radius:12px; background:white; color:#172b4d; padding:12px; font:inherit; font-size:16px; min-width:140px; }
+.mymoney-v6 .mymoney-reminder__time-row input:disabled { opacity:.55; background:#f8fafc; }
+.mymoney-v6 .mymoney-reminder__permission { margin:-8px 0 0!important; font-size:12px!important; color:#64748b!important; }
+.mymoney-v6 .mymoney-reminder__actions { display:flex; flex-wrap:wrap; gap:10px; }
+.mymoney-v6 .mymoney-reminder__actions button { min-height:44px; padding:10px 16px; border-radius:12px; font:inherit; font-weight:700; cursor:pointer; }
+.mymoney-v6 .mymoney-reminder__save { flex:1 1 180px; color:white; background:#2563eb; border:1px solid #2563eb; }
+.mymoney-v6 .mymoney-reminder__test { flex:1 1 150px; color:#1e40af; background:#eff6ff; border:1px solid #bfdbfe; }
+.mymoney-v6 .mymoney-reminder__actions button:disabled { opacity:.55; cursor:wait; }
+.mymoney-v6 .mymoney-reminder__feedback { margin:0!important; color:#1d4ed8!important; font-weight:700; font-size:13px!important; }
+.mymoney-v6 .mymoney-reminder__limit { margin:0!important; border-radius:12px; background:#f7f9fc; padding:14px 16px; font-size:12px!important; line-height:1.65!important; color:#64748b!important; }
+@media(max-width:460px){
+ .mymoney-v6 .mymoney-reminder__head {flex-wrap:wrap;}
+ .mymoney-v6 .mymoney-reminder__toggle-row {padding:14px;}
+ .mymoney-v6 .mymoney-reminder__actions {flex-direction:column;}
+ .mymoney-v6 .mymoney-reminder__actions button {flex:auto;width:100%;}
+}

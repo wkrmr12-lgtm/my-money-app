@@ -1,5 +1,25 @@
 import { useState } from 'react'
 
+// 달력 칸은 짧게 보여주되, 실제 저장 금액은 변경하지 않습니다.
+// 선택한 날짜의 상세 내역에서는 언제나 원래 금액이 표시됩니다.
+function formatCalendarPreview(value) {
+  const amount = Number(value)
+  if (!Number.isFinite(amount)) return ''
+  if (Math.abs(amount) >= 100_000_000) {
+    return `${(amount / 100_000_000).toFixed(1).replace(/\.0$/, '')}억`
+  }
+  if (Math.abs(amount) >= 10_000_000) {
+    return `${Math.round(amount / 10_000).toLocaleString('ko-KR')}만`
+  }
+  if (Math.abs(amount) >= 1_000_000) {
+    return `${Math.round(amount / 10_000).toLocaleString('ko-KR')}만`
+  }
+  if (Math.abs(amount) >= 10_000) {
+    return `${(amount / 10_000).toFixed(1).replace(/\.0$/, '')}만`
+  }
+  return amount.toLocaleString('ko-KR')
+}
+
 function CalendarPanel({
     selectedMonth,
     selectedDate,
@@ -11,9 +31,6 @@ function CalendarPanel({
   }) {
 const [showAllExpenses, setShowAllExpenses] = useState(false)
 const [editingExpense, setEditingExpense] = useState(null)
-const [searchQuery, setSearchQuery] = useState('')
-const [listScope, setListScope] = useState('day')
-const [sortOrder, setSortOrder] = useState('newest')
 
 
     const [year, month] = selectedMonth.split('-').map(Number)
@@ -42,12 +59,6 @@ const [sortOrder, setSortOrder] = useState('newest')
     }
   
     const selectedExpenses = expensesFor(selectedDate)
-    const visibleExpenses = (listScope === 'day' ? selectedExpenses : items)
-      .filter(item => `${item.name || ''} ${item.category || ''} ${item.memo || ''}`
-        .toLocaleLowerCase().includes(searchQuery.trim().toLocaleLowerCase()))
-      .sort((a,b) => sortOrder === 'amount' ? Number(b.amount) - Number(a.amount)
-        : sortOrder === 'oldest' ? (a.date || '').localeCompare(b.date || '')
-        : (b.date || '').localeCompare(a.date || ''))
   
     const selectedTotal = selectedExpenses.reduce(
       (sum, item) => sum + Number(item.amount), 0
@@ -80,6 +91,10 @@ const [sortOrder, setSortOrder] = useState('newest')
               <button
                 type="button"
                 key={date}
+                title={dailyExpenses.length ? `총 ${dailyTotal.toLocaleString('ko-KR')}원` : undefined}
+                aria-label={dailyExpenses.length
+                  ? `${date} 지출 ${dailyExpenses.length}건, 총 ${dailyTotal.toLocaleString('ko-KR')}원`
+                  : `${date} 지출 없음`}
                 className={
                   'calendar-day' +
                   (selectedDate === date ? ' selected' : '')
@@ -95,7 +110,7 @@ onClick={() => {
   
                 {dailyExpenses.length > 0 && (
                   <small>
-                    {dailyTotal.toLocaleString()}원
+                    {formatCalendarPreview(dailyTotal)}
                   </small>
                 )}
               </button>
@@ -104,26 +119,16 @@ onClick={() => {
         </div>
   
         <div className="calendar-detail">
-          <h3>{listScope === 'day' ? `${selectedDate} 지출 내역` : '이번 달 전체 지출 내역'}</h3>
-          <div className="v6-filter-row">
-            <button className={listScope === 'day' ? 'is-active' : ''} type="button" onClick={() => {setListScope('day');setShowAllExpenses(false)}}>선택한 날짜</button>
-            <button className={listScope === 'month' ? 'is-active' : ''} type="button" onClick={() => {setListScope('month');setShowAllExpenses(false)}}>이번 달 전체</button>
-          </div>
-          <div className="v6-search-row">
-            <input className="v6-transaction-search" type="search" value={searchQuery} onChange={e => {setSearchQuery(e.target.value);setShowAllExpenses(false)}} placeholder="사용처·카테고리·메모 검색" aria-label="지출 검색" />
-            <select aria-label="지출 정렬" value={sortOrder} onChange={e => setSortOrder(e.target.value)}>
-              <option value="newest">최신순</option><option value="oldest">오래된순</option><option value="amount">금액순</option>
-            </select>
-          </div>
+          <h3>{selectedDate} 지출 내역</h3>
   
-          {visibleExpenses.length === 0 ? (
+          {selectedExpenses.length === 0 ? (
             <p>이 날짜에 등록된 지출이 없어요.</p>
           ) : (
             
-    (showAllExpenses ? visibleExpenses : visibleExpenses.slice(0, 5)).map(item => (
+    (showAllExpenses ? selectedExpenses : selectedExpenses.slice(0, 5)).map(item => (
 
               <div className="calendar-expense" key={item.id}>
-                <span className="v6-expense-info"><strong>{item.name}</strong><small>{item.date} · {item.category}</small>{item.memo && <small className="v6-transaction-memo">{item.memo}</small>}</span>
+                <span>{item.name}</span>
                 <strong>
                   {Number(item.amount).toLocaleString()}원
                 </strong>
@@ -159,7 +164,7 @@ onClick={() => {
             ))
           )}
   
-{visibleExpenses.length > 5 && (
+{selectedExpenses.length > 5 && (
   <button
     type="button"
     className="calendar-more-btn"
@@ -167,7 +172,7 @@ onClick={() => {
   >
     {showAllExpenses
       ? '접기 ▲'
-      : `나머지 ${visibleExpenses.length - 5}건 더 보기 ▼`}
+      : `나머지 ${selectedExpenses.length - 5}건 더 보기 ▼`}
   </button>
 )}
 
@@ -193,8 +198,7 @@ onClick={() => {
         name: editingExpense.name.trim(),
         amount: Number(editingExpense.amount),
         date: editingExpense.date,
-        category: editingExpense.category,
-        memo: (editingExpense.memo || '').trim()
+        category: editingExpense.category
       })
 
       setEditingExpense(null)
@@ -266,10 +270,6 @@ onClick={() => {
       </select>
     </label>
 
-    <label>거래 메모 (선택)
-      <textarea maxLength={200} rows={2} value={editingExpense.memo || ''}
-        onChange={e => setEditingExpense(prev => ({...prev, memo:e.target.value}))} />
-    </label>
     <button type="submit">수정 완료</button>
 
     <button
