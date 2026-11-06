@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import BudgetPanel from './BudgetPanel.jsx'
 import CalendarPanel from './CalendarPanel.jsx'
@@ -25,6 +25,52 @@ function getLocalDate() {
   const day = String(now.getDate()).padStart(2, '0')
 
   return `${year}-${month}-${day}`
+}
+
+// 월별 다중 메모 v2: 원본 데이터는 보존하고 새 키로 한 번만 복사합니다.
+const MEMO_ENTRIES_KEY = 'mymoney-memo-entries-v2'
+const OLD_MONTHLY_MEMO_KEY = 'mymoney-monthly-notes'
+
+function isValidMonth(month) {
+  return /^\d{4}-(0[1-9]|1[0-2])$/.test(month)
+}
+
+function makeMemoId() {
+  return crypto.randomUUID()
+}
+
+function readMemoEntries() {
+  const existing = localStorage.getItem(MEMO_ENTRIES_KEY)
+  if (existing !== null) {
+    const value = JSON.parse(existing)
+    if (!Array.isArray(value)) throw new Error('메모 보관함 데이터 형식 오류')
+    return value.filter(entry => entry && typeof entry.id === 'string' &&
+      isValidMonth(entry.month) && typeof entry.content === 'string')
+  }
+
+  // 기존 월별 메모(월마다 문자열 1건)를 새 형식으로 복사합니다.
+  const previous = localStorage.getItem(OLD_MONTHLY_MEMO_KEY)
+  const entries = []
+  if (previous !== null) {
+    const parsed = JSON.parse(previous)
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      throw new Error('기존 월별 메모 형식 오류')
+    }
+    Object.entries(parsed).forEach(([month, content]) => {
+      if (isValidMonth(month) && typeof content === 'string' && content.trim()) {
+        entries.push({ id: makeMemoId(), month, content, createdAt: new Date().toISOString() })
+      }
+    })
+  } else {
+    const legacy = localStorage.getItem('mymoney-home-note')
+    if (legacy && legacy.trim()) {
+      entries.push({ id: makeMemoId(), month: getLocalDate().slice(0, 7), content: legacy, createdAt: new Date().toISOString() })
+    }
+  }
+
+  // 새 저장 키를 먼저 생성해야 나중에 전부 삭제해도 옛 메모가 부활하지 않습니다.
+  localStorage.setItem(MEMO_ENTRIES_KEY, JSON.stringify(entries))
+  return entries
 }
 
 function App() {
@@ -204,14 +250,123 @@ const previousMonth = [
   const [activeTab, setActiveTab] = useState('home')
   const [incomeFormOpen, setIncomeFormOpen] = useState(false)
   const [expenseFormOpen, setExpenseFormOpen] = useState(false)
-  const [homeMemo, setHomeMemo] = useState(() => {
-    try { return localStorage.getItem('mymoney-home-note') || '' }
-    catch { return '' }
+  // 저장은 '메모 저장' 버튼을 누를 때만 실행합니다. 기존 글을 입력만으로 덮어쓰지 않습니다.
+  const [memoEntries, setMemoEntries] = useState(() => {
+    try { return readMemoEntries() } catch { return [] }
   })
+  const [memoArchiveOpen, setMemoArchiveOpen] = useState(false)
+  const [memoDraft, setMemoDraft] = useState('')
+  const [editingMemoId, setEditingMemoId] = useState(null)
+  const [memoNotice, setMemoNotice] = useState('')
+  const [memoSaveMessage, setMemoSaveMessage] = useState('저장 버튼으로 등록')
+
+  const memoEditNavigation = useRef(null)
   useEffect(() => {
-    try { localStorage.setItem('mymoney-home-note', homeMemo) }
-    catch { /* 저장소가 차단된 경우 화면은 계속 사용 가능 */ }
-  }, [homeMemo])
+    if (memoEditNavigation.current === selectedMonth) {
+      memoEditNavigation.current = null
+      return
+    }
+    setMemoDraft('')
+    setEditingMemoId(null)
+  }, [selectedMonth])
+
+  useEffect(() => {
+    if (!memoNotice) return
+    const timer = setTimeout(() => setMemoNotice(''), 3500)
+    return () => clearTimeout(timer)
+  }, [memoNotice])
+
+  const savedMemoEntries = [...memoEntries]
+    .sort((a, b) => b.month.localeCompare(a.month) || (b.createdAt || '').localeCompare(a.createdAt || ''))
+
+  function scrollToMemoArchive() {
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      document.getElementById('v6-memo-archive-list')?.scrollIntoView({behavior:'smooth',block:'start'})
+    }))
+  }
+
+  function saveMemo() {
+    const content = memoDraft.trim()
+    if (!content) {
+      setMemoNotice('메모 내용을 먼저 입력해 주세요.')
+      return
+    }
+    try {
+      const current = readMemoEntries()
+      let updated
+      if (editingMemoId) {
+        if (!current.some(entry => entry.id === editingMemoId)) {
+          setEditingMemoId(null)
+          setMemoNotice('수정할 메모가 없습니다. 다시 선택해 주세요.')
+          return
+        }
+        updated = current.map(entry => entry.id === editingMemoId
+          ? {...entry, content, updatedAt:new Date().toISOString()} : entry)
+      } else {
+        updated = [...current, {
+          id:makeMemoId(), month:selectedMonth, content, createdAt:new Date().toISOString()
+        }]
+      }
+      localStorage.setItem(MEMO_ENTRIES_KEY, JSON.stringify(updated))
+      setMemoEntries(updated)
+      setMemoDraft('')
+      setEditingMemoId(null)
+      setMemoArchiveOpen(true)
+      setMemoSaveMessage('✓ 저장 완료')
+      setMemoNotice(editingMemoId ? '메모 수정이 완료되었습니다.' : '새 메모가 저장되었습니다.')
+      scrollToMemoArchive()
+    } catch {
+      setMemoSaveMessage('저장 실패')
+      setMemoNotice('메모를 저장하지 못했어요. 저장 공간을 확인해 주세요.')
+    }
+  }
+
+  function openMemoForEdit(entry) {
+    memoEditNavigation.current = entry.month
+    setSelectedMonth(entry.month)
+    setExpenseDate(`${entry.month}-01`)
+    setIncomeDate(`${entry.month}-01`)
+    setEditingMemoId(entry.id)
+    setMemoDraft(entry.content)
+    setMemoSaveMessage('수정 중 · 아직 저장되지 않음')
+    setMemoNotice(`${entry.month.replace('-', '년 ')}월 메모를 수정하고 저장 버튼을 눌러 주세요.`)
+    requestAnimationFrame(() => document.getElementById('v6-monthly-memo-input')?.focus())
+  }
+
+  function cancelMemoEdit() {
+    setEditingMemoId(null)
+    setMemoDraft('')
+    setMemoSaveMessage('저장 버튼으로 등록')
+    setMemoNotice('수정을 취소했습니다. 기존 메모는 그대로 유지됩니다.')
+  }
+
+  function deleteMemo(entry) {
+    if (!window.confirm(`${entry.month.replace('-', '년 ')}월의 선택한 메모를 삭제할까요?\n삭제한 메모는 되돌릴 수 없습니다.`)) return
+    try {
+      const current = readMemoEntries()
+      const updated = current.filter(item => item.id !== entry.id)
+      localStorage.setItem(MEMO_ENTRIES_KEY, JSON.stringify(updated))
+      setMemoEntries(updated)
+      if (editingMemoId === entry.id) {
+        setEditingMemoId(null)
+        setMemoDraft('')
+      }
+      setMemoSaveMessage('삭제 완료')
+      setMemoNotice('메모가 삭제되었습니다.')
+    } catch {
+      setMemoNotice('메모를 삭제하지 못했어요. 다시 시도해 주세요.')
+    }
+  }
+
+  useEffect(() => {
+    const onStorage = event => {
+      if (event.key !== MEMO_ENTRIES_KEY) return
+      try { setMemoEntries(readMemoEntries()) }
+      catch { setMemoNotice('다른 창의 메모 변경을 불러오지 못했어요.') }
+    }
+    window.addEventListener('storage', onStorage)
+    return () => window.removeEventListener('storage', onStorage)
+  }, [])
 
   const monthlyIncomes = incomes.filter(item => item.date?.startsWith(selectedMonth))
   const monthlyIncomeTotal = monthlyIncomes.reduce((sum, item) => sum + Number(item.amount), 0)
@@ -298,9 +453,44 @@ const previousMonth = [
                     </div>
                   ))}
                 </section>
-                <section className="v6-card">
-                  <div className="v6-section-head"><h3>나의 메모</h3><span>자동 저장</span></div>
-                  <textarea className="v6-memo" rows={3} maxLength={1000} value={homeMemo} onChange={e => setHomeMemo(e.target.value)} placeholder="이번 달 기억할 내용을 적어보세요." />
+                <section className="v6-card v6-monthly-memo-card">
+                  <div className="v6-section-head"><h3>📝 월별 가계부 메모</h3><span>{memoSaveMessage}</span></div>
+                  <p className="v6-memo-description">{selectedMonth.replace('-', '년 ')}월에는 메모를 여러 개 저장할 수 있어요. 기존 메모는 덮어쓰지 않습니다.</p>
+                  <label className="v6-memo-month-label" htmlFor="v6-monthly-memo-input">
+                    {editingMemoId ? '선택한 메모 수정' : `${selectedMonth.replace('-', '년 ')}월 새 메모 작성`}
+                  </label>
+                  <textarea id="v6-monthly-memo-input" className="v6-memo" rows={4} maxLength={1000}
+                    value={memoDraft} onChange={e => {setMemoDraft(e.target.value);setMemoSaveMessage('작성 중 · 아직 저장되지 않음')}}
+                    placeholder="예: 자동차 수리비가 발생해서 이번 달 지출이 많았음." />
+                  <div className="v6-memo-footnote"><span>저장 버튼을 눌러야 목록에 등록돼요.</span><span>{memoDraft.length}/1000자</span></div>
+                  <div className="v6-memo-actions">
+                    {editingMemoId && <button type="button" className="v6-memo-edit" onClick={cancelMemoEdit}>수정 취소</button>}
+                    <button type="button" className="v6-memo-save" onClick={saveMemo}>{editingMemoId ? '✓ 수정 저장' : '＋ 새 메모 저장'}</button>
+                  </div>
+                  {memoNotice && <p className="v6-memo-notice" role="status" aria-live="polite">{memoNotice}</p>}
+                  <button className="v6-memo-archive-toggle" type="button" aria-expanded={memoArchiveOpen}
+                    onClick={() => setMemoArchiveOpen(open => !open)}>
+                    <span>저장된 메모 목록 ({savedMemoEntries.length}개)</span>
+                    <span aria-hidden="true">{memoArchiveOpen ? '접기 ▲' : '펼치기 ▼'}</span>
+                  </button>
+                  {memoArchiveOpen && (
+                    <div id="v6-memo-archive-list" className="v6-memo-archive">
+                      {savedMemoEntries.length === 0 ? (
+                        <p className="v6-empty">아직 저장된 메모가 없어요.</p>
+                      ) : savedMemoEntries.map(entry => (
+                        <div className="v6-memo-record" key={entry.id}>
+                          <div className="v6-memo-record-main">
+                            <strong>{entry.month.replace('-', '년 ')}월</strong>
+                            <p>{entry.content}</p>
+                          </div>
+                          <div className="v6-memo-record-actions">
+                            <button type="button" className="v6-memo-edit" onClick={() => openMemoForEdit(entry)}>수정</button>
+                            <button type="button" className="v6-memo-delete" onClick={() => deleteMemo(entry)}>삭제</button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </section>
               </div>
             )}
