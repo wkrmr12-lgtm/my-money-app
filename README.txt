@@ -1,0 +1,1 @@
+MyMoney v6.0 1차 화면 개편 파일\n\n1. 현재 프로젝트를 Git으로 백업하세요.\n2. src/App.jsx 와 src/App.css 만 각 파일 내용으로 교체하세요.\n3. 나머지 기존 컴포넌트는 변경하지 마세요.\n4. npm run dev 실행 후 홈/수입/지출/통계/설정 확인하세요.\n5. 이 버전은 탭 화면 구조 1차 개편입니다. 검색/거래별 메모는 이후 단계입니다.\n6. 기존 localStorage 키 mymoney / mymoney-income 을 그대로 사용합니다.\n
