@@ -2641,3 +2641,29 @@
     box-shadow: 0 6px 18px rgba(113, 14, 44, 0.40);
   }
 }
+
+/* MyMoney v6 - 지출 메뉴의 등록 CTA도 지출(레드) 의미색으로 통일.
+   홈 지출 등록 버튼과 동일한 색상이며, 수입(블루)/사진 등록 버튼은 유지. */
+.mymoney-v6 .v6-expense-page > .v6-expand-trigger,
+.mymoney-v6 .v6-expense-page .expense-form form > button[type="submit"] {
+  background: #be123c;
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 5px 15px rgba(190, 18, 60, 0.24);
+}
+.mymoney-v6 .v6-expense-page > .v6-expand-trigger:hover,
+.mymoney-v6 .v6-expense-page .expense-form form > button[type="submit"]:hover {
+  background: #9f1239;
+}
+@media (prefers-color-scheme: dark) {
+  .mymoney-v6 .v6-expense-page > .v6-expand-trigger,
+  .mymoney-v6 .v6-expense-page .expense-form form > button[type="submit"] {
+    background: #be123c;
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(113, 14, 44, 0.40);
+  }
+  .mymoney-v6 .v6-expense-page > .v6-expand-trigger:hover,
+  .mymoney-v6 .v6-expense-page .expense-form form > button[type="submit"]:hover {
+    background: #9f1239;
+  }
+}
