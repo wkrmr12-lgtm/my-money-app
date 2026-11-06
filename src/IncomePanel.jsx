@@ -12,6 +12,7 @@ function IncomePanel({
   }) {
 const [showAllIncomes, setShowAllIncomes] = useState(false)
 const [editingIncome, setEditingIncome] = useState(null)
+const [searchQuery, setSearchQuery] = useState('')
 
     console.log('수입 관리 조회 월:', selectedMonth)
 
@@ -26,6 +27,10 @@ const [editingIncome, setEditingIncome] = useState(null)
   const monthlyIncomes = incomes
   .filter(item => item.date?.startsWith(selectedMonth))
   .sort((a, b) => b.date.localeCompare(a.date))
+
+  const filteredIncomes = monthlyIncomes.filter(item =>
+    `${item.name || ''} ${item.memo || ''}`.toLocaleLowerCase().includes(searchQuery.trim().toLocaleLowerCase())
+  )
 
 
   const incomeTotal = monthlyIncomes.reduce(
@@ -109,21 +114,25 @@ const [editingIncome, setEditingIncome] = useState(null)
 
       <div className="income-list">
         <h3>선택한 달의 수입 내역</h3>
+        <input className="v6-transaction-search" type="search" value={searchQuery}
+          onChange={e => { setSearchQuery(e.target.value); setShowAllIncomes(false) }}
+          placeholder="수입 이름·메모 검색" aria-label="수입 이름·메모 검색" />
 
-        {monthlyIncomes.length === 0 && (
+        {filteredIncomes.length === 0 && (
           <p className="empty-message">
             등록된 수입이 없어요.
           </p>
         )}
 
      
-{(showAllIncomes ? monthlyIncomes : monthlyIncomes.slice(0, 5)).map(item => (
+{(showAllIncomes ? filteredIncomes : filteredIncomes.slice(0, 5)).map(item => (
 
 
           <div className="income-item" key={item.id}>
             <div>
               <strong>{item.name}</strong>
               <p>{item.date}</p>
+              {item.memo && <p className="v6-transaction-memo">{item.memo}</p>}
             </div>
 
             <strong>
@@ -178,7 +187,8 @@ onClick={() => {
       updateIncome(editingIncome.id, {
         name: editingIncome.name.trim(),
         amount: Number(editingIncome.amount),
-        date: editingIncome.date
+        date: editingIncome.date,
+        memo: (editingIncome.memo || '').trim()
       })
     
       onIncomeEdited()
@@ -230,6 +240,10 @@ onClick={() => {
       />
     </label>
 
+    <label>거래 메모 (선택)
+      <textarea maxLength={200} rows={2} value={editingIncome.memo || ''}
+        onChange={e => setEditingIncome(prev => ({...prev, memo: e.target.value}))} />
+    </label>
     <button type="submit">수정 완료</button>
 
     <button
@@ -241,13 +255,13 @@ onClick={() => {
   </form>
 )}
 
-{monthlyIncomes.length > 5 && (
+{filteredIncomes.length > 5 && (
   <button
     type="button"
     className="income-more-btn"
     onClick={() => setShowAllIncomes(!showAllIncomes)}
   >
-    {showAllIncomes ? '접기 ▲' : `전체 수입 내역 보기 (${monthlyIncomes.length}건) ▼`}
+    {showAllIncomes ? '접기 ▲' : `전체 수입 내역 보기 (${filteredIncomes.length}건) ▼`}
   </button>
 )}
 

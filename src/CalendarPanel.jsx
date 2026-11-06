@@ -11,6 +11,9 @@ function CalendarPanel({
   }) {
 const [showAllExpenses, setShowAllExpenses] = useState(false)
 const [editingExpense, setEditingExpense] = useState(null)
+const [searchQuery, setSearchQuery] = useState('')
+const [listScope, setListScope] = useState('day')
+const [sortOrder, setSortOrder] = useState('newest')
 
 
     const [year, month] = selectedMonth.split('-').map(Number)
@@ -39,6 +42,12 @@ const [editingExpense, setEditingExpense] = useState(null)
     }
   
     const selectedExpenses = expensesFor(selectedDate)
+    const visibleExpenses = (listScope === 'day' ? selectedExpenses : items)
+      .filter(item => `${item.name || ''} ${item.category || ''} ${item.memo || ''}`
+        .toLocaleLowerCase().includes(searchQuery.trim().toLocaleLowerCase()))
+      .sort((a,b) => sortOrder === 'amount' ? Number(b.amount) - Number(a.amount)
+        : sortOrder === 'oldest' ? (a.date || '').localeCompare(b.date || '')
+        : (b.date || '').localeCompare(a.date || ''))
   
     const selectedTotal = selectedExpenses.reduce(
       (sum, item) => sum + Number(item.amount), 0
@@ -95,16 +104,26 @@ onClick={() => {
         </div>
   
         <div className="calendar-detail">
-          <h3>{selectedDate} 지출 내역</h3>
+          <h3>{listScope === 'day' ? `${selectedDate} 지출 내역` : '이번 달 전체 지출 내역'}</h3>
+          <div className="v6-filter-row">
+            <button className={listScope === 'day' ? 'is-active' : ''} type="button" onClick={() => {setListScope('day');setShowAllExpenses(false)}}>선택한 날짜</button>
+            <button className={listScope === 'month' ? 'is-active' : ''} type="button" onClick={() => {setListScope('month');setShowAllExpenses(false)}}>이번 달 전체</button>
+          </div>
+          <div className="v6-search-row">
+            <input className="v6-transaction-search" type="search" value={searchQuery} onChange={e => {setSearchQuery(e.target.value);setShowAllExpenses(false)}} placeholder="사용처·카테고리·메모 검색" aria-label="지출 검색" />
+            <select aria-label="지출 정렬" value={sortOrder} onChange={e => setSortOrder(e.target.value)}>
+              <option value="newest">최신순</option><option value="oldest">오래된순</option><option value="amount">금액순</option>
+            </select>
+          </div>
   
-          {selectedExpenses.length === 0 ? (
+          {visibleExpenses.length === 0 ? (
             <p>이 날짜에 등록된 지출이 없어요.</p>
           ) : (
             
-    (showAllExpenses ? selectedExpenses : selectedExpenses.slice(0, 5)).map(item => (
+    (showAllExpenses ? visibleExpenses : visibleExpenses.slice(0, 5)).map(item => (
 
               <div className="calendar-expense" key={item.id}>
-                <span>{item.name}</span>
+                <span className="v6-expense-info"><strong>{item.name}</strong><small>{item.date} · {item.category}</small>{item.memo && <small className="v6-transaction-memo">{item.memo}</small>}</span>
                 <strong>
                   {Number(item.amount).toLocaleString()}원
                 </strong>
@@ -140,7 +159,7 @@ onClick={() => {
             ))
           )}
   
-{selectedExpenses.length > 5 && (
+{visibleExpenses.length > 5 && (
   <button
     type="button"
     className="calendar-more-btn"
@@ -148,7 +167,7 @@ onClick={() => {
   >
     {showAllExpenses
       ? '접기 ▲'
-      : `나머지 ${selectedExpenses.length - 5}건 더 보기 ▼`}
+      : `나머지 ${visibleExpenses.length - 5}건 더 보기 ▼`}
   </button>
 )}
 
@@ -174,7 +193,8 @@ onClick={() => {
         name: editingExpense.name.trim(),
         amount: Number(editingExpense.amount),
         date: editingExpense.date,
-        category: editingExpense.category
+        category: editingExpense.category,
+        memo: (editingExpense.memo || '').trim()
       })
 
       setEditingExpense(null)
@@ -246,6 +266,10 @@ onClick={() => {
       </select>
     </label>
 
+    <label>거래 메모 (선택)
+      <textarea maxLength={200} rows={2} value={editingExpense.memo || ''}
+        onChange={e => setEditingExpense(prev => ({...prev, memo:e.target.value}))} />
+    </label>
     <button type="submit">수정 완료</button>
 
     <button

@@ -6,7 +6,6 @@ import CalendarPanel from './CalendarPanel.jsx'
 import DashboardPanel from './DashboardPanel.jsx'
 import SpendingAnalysis from './SpendingAnalysis.jsx'
 import IncomePanel from './IncomePanel.jsx'
-import IncomeForm from './IncomeForm.jsx'
 import FinanceChart from './FinanceChart.jsx'
 const categories = ['식비', '카페', '쇼핑', '교통', '생활', '기타']
 
@@ -53,6 +52,8 @@ function App() {
   const [name, setName] = useState('')
   const [amount, setAmount] = useState('')
   const [category, setCategory] = useState('식비')
+  const [expenseMemo, setExpenseMemo] = useState('')
+  const [incomeMemo, setIncomeMemo] = useState('')
   const [selectedMonth, setSelectedMonth] = useState(
     getLocalDate().slice(0, 7)
   )
@@ -136,6 +137,7 @@ const previousMonth = [
         name: name.trim(),
         amount: value,
         category,
+        memo: expenseMemo.trim(),
         date: expenseDate
       },
       ...prev
@@ -144,6 +146,7 @@ const previousMonth = [
     setSelectedMonth(expenseDate.slice(0, 7))
     setName('')
     setAmount('')
+    setExpenseMemo('')
     setToast('expense')
 
   }
@@ -167,6 +170,7 @@ const previousMonth = [
       {
         id: crypto.randomUUID(),
         name: incomeName.trim(),
+        memo: incomeMemo.trim(),
         amount: value,
         date: incomeDate
       },
@@ -175,6 +179,7 @@ const previousMonth = [
   
     setIncomeName('')
     setIncomeAmount('')
+    setIncomeMemo('')
     setToast('income')
 
   }
@@ -307,7 +312,25 @@ const previousMonth = [
                   {incomeFormOpen ? '수입 등록창 접기 ▲' : '＋ 새 수입 등록'}
                 </button>
                 {incomeFormOpen && (
-                  <div className="v6-form-wrap"><IncomeForm name={incomeName} amount={incomeAmount} date={incomeDate} onNameChange={setIncomeName} onAmountChange={setIncomeAmount} onDateChange={setIncomeDate} onSubmit={addIncome} /></div>
+                  <section className="v6-form-wrap v6-inline-entry">
+                    <h3>수입 등록하기</h3>
+                    <form className="income-form" onSubmit={addIncome}>
+                      <label className="income-date-label">수입 날짜
+                        <input type="date" value={incomeDate} onChange={e => {
+                          if (!e.target.value) return
+                          setIncomeDate(e.target.value)
+                          setSelectedMonth(e.target.value.slice(0, 7))
+                        }} required />
+                      </label>
+                      <input placeholder="수입 이름 (예: 용돈)" value={incomeName} onChange={e => setIncomeName(e.target.value)} required />
+                      <input type="number" placeholder="수입 금액" min="1" value={incomeAmount} onChange={e => setIncomeAmount(e.target.value)} required />
+                      <label className="v6-entry-memo-label">거래 메모 (선택)
+                        <textarea maxLength={200} rows={2} value={incomeMemo} onChange={e => setIncomeMemo(e.target.value)} placeholder="예: 부모님께 받은 용돈" />
+                        <small>{incomeMemo.length}/200자</small>
+                      </label>
+                      <button type="submit">＋ 수입 추가</button>
+                    </form>
+                  </section>
                 )}
                 <IncomePanel key={`income-${selectedMonth}`} selectedMonth={selectedMonth} monthlyTotal={monthlyTotal} incomes={incomes} setIncomes={setIncomes} onIncomeEdited={() => setToast('income-edit')} />
               </div>
@@ -334,6 +357,10 @@ const previousMonth = [
                       <select value={category} onChange={e => setCategory(e.target.value)}>
                         {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                       </select>
+                      <label className="v6-entry-memo-label">거래 메모 (선택)
+                        <textarea maxLength={200} rows={2} value={expenseMemo} onChange={e => setExpenseMemo(e.target.value)} placeholder="예: 아이스 아메리카노 2잔" />
+                        <small>{expenseMemo.length}/200자</small>
+                      </label>
                       <button type="submit">＋ 지출 추가</button>
                     </form>
                   </section>
