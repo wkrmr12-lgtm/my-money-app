@@ -1,0 +1,15 @@
+/* 기존 v6 UI 토큰 및 카드 스타일을 활용하는 독립 스타일 */
+.mymoney-install{display:grid;gap:14px}
+.mymoney-install__heading{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.mymoney-install__heading h3{margin:0 0 8px;color:#1b3251;font-size:1.06rem;line-height:1.4}
+.mymoney-install__heading p{margin:0;color:#6a7a90;line-height:1.6;font-size:.92rem}
+.mymoney-install__tag{display:inline-flex;flex-shrink:0;background:#eff6ff;border:1px solid #d2e5ff;color:#2462d0;border-radius:999px;padding:7px 10px;font-size:.77rem;font-weight:700}
+.mymoney-install__button{width:100%;min-height:49px;background:#2563eb;border:0;border-radius:14px;color:#fff;font-weight:700;font-size:1rem;cursor:pointer}
+.mymoney-install__button:disabled{opacity:.6;cursor:wait}
+.mymoney-install__hint{background:#f5f8fd;border:1px solid #e2eaf5;border-radius:14px;padding:14px 16px;color:#324b6a}
+.mymoney-install__hint p{margin:0 0 8px;line-height:1.6;font-size:.92rem}
+.mymoney-install__hint small{color:#6a7a90;line-height:1.6}
+.mymoney-install__good{margin:0;color:#147451;font-weight:700}
+.mymoney-install__message{margin:0;color:#2559a5;font-size:.88rem;line-height:1.6}
+.mymoney-install__notice{margin:0;color:#697b92;font-size:.84rem;line-height:1.65}
+@media(max-width:600px){.mymoney-install__heading{flex-wrap:wrap}.mymoney-install__tag{font-size:.73rem}}
