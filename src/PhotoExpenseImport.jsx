@@ -150,6 +150,7 @@ function PhotoExpenseImport({ existingExpenses = [], onImport, onClose }) {
   const rowElements = useRef({})
   const progressTargetRef = useRef(null)
   const resultsTargetRef = useRef(null)
+  const submitTargetRef = useRef(null)
   const scrollToTarget = target => {
     if (!target) return
     const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
@@ -347,6 +348,16 @@ function PhotoExpenseImport({ existingExpenses = [], onImport, onClose }) {
   const selectedReviewRows = reviewRows.filter(row => row.selected)
   const firstReview = selectedReviewRows[0] || reviewRows[0]
 
+  // 긴 거래 목록을 검토한 뒤 맨 아래 최종 등록 영역으로 바로 이동합니다.
+  function goToFinalRegistration() {
+    if (!submitTargetRef.current) return
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    submitTargetRef.current.scrollIntoView({
+      behavior: reduceMotion ? 'auto' : 'smooth',
+      block: 'center',
+    })
+  }
+
   function submitImport() {
     const chosen = rows.filter(row => row.selected)
     if (!chosen.length) {
@@ -443,14 +454,24 @@ function PhotoExpenseImport({ existingExpenses = [], onImport, onClose }) {
           <p className="v6-photo-notice">회색 잔액은 등록 대상이 아니며, 인식되지 않은 칸은 직접 입력할 수 있어요. 기존 기록과 동일한 거래는 중복 후보로 표시됩니다.</p>
           {rows.some(row => row.isCardPhoto) && (
             <div className="v6-photo-notice" role="status" style={{border:'1px solid #cbd5e1',borderRadius:12,padding:'12px 14px',lineHeight:1.6}}>
-              <strong>✨ 간편 검토 모드</strong>
-              <p style={{margin:'5px 0 0'}}>문제가 발견되지 않은 거래는 미리 선택했어요. 날짜·금액·상호명이 누락되거나 인식 오류가 의심되는 거래만 노란색으로 표시합니다. OCR이 틀려도 자동으로 발견하지 못할 수 있으니 목록을 빠르게 훑어봐 주세요.</p>
+              <strong>📋 등록 전 한 번만 확인해 주세요</strong>
+              <p style={{margin:'5px 0 0'}}>사진에서 읽은 거래내역을 아래에 정리했어요. 날짜·금액·사용처를 한 번 살펴보고, 잘못된 내용은 수정해 주세요. 확인이 필요한 거래는 노란색으로 표시했어요.</p>
             </div>
           )}
           <div className="v6-photo-notice" role="status" style={{borderRadius:12,padding:'12px 14px',lineHeight:1.6,display:'flex',gap:12,flexWrap:'wrap'}}>
             <strong>✅ 등록 가능 {rows.filter(row => !hasPendingReview(row) && !hasDuplicate(row, existingExpenses)).length}건</strong>
             <strong>⚠️ 확인 필요 {reviewRows.length}건</strong>
             <strong>🔁 중복 후보 {rows.filter(row => hasDuplicate(row, existingExpenses)).length}건</strong>
+          </div>
+          <div style={{position:'sticky',top:8,zIndex:15,display:'flex',justifyContent:'flex-end',pointerEvents:'none'}}>
+            <button
+              type="button"
+              onClick={goToFinalRegistration}
+              aria-label={`최종 등록 버튼으로 이동, 현재 선택된 거래 ${selected.length}건`}
+              style={{pointerEvents:'auto',maxWidth:'100%',minHeight:44,padding:'10px 16px',border:'1px solid #1d4ed8',borderRadius:999,background:'#1d4ed8',color:'#fff',fontSize:14,fontWeight:750,boxShadow:'0 4px 14px rgba(30,64,175,.25)',cursor:'pointer'}}
+            >
+              ↓ 최종 등록으로 이동 ({selected.length}건)
+            </button>
           </div>
           {rows.map((row, index) => {
             const duplicate = hasDuplicate(row, existingExpenses)
@@ -538,7 +559,7 @@ function PhotoExpenseImport({ existingExpenses = [], onImport, onClose }) {
               )}
             </div>
           )}
-          <div className="v6-photo-total">
+          <div ref={submitTargetRef} className="v6-photo-total" style={{scrollMarginTop:24}}>
             <span>선택된 거래 {selected.length}건</span>
             <strong>{selectedTotal.toLocaleString('ko-KR')}원</strong>
           </div>
@@ -563,7 +584,7 @@ function PhotoExpenseImport({ existingExpenses = [], onImport, onClose }) {
       )}
       {rawText && (
         <details className="v6-photo-raw">
-          <summary>인식된 원문 텍스트 확인 (인식 오류 점검용)</summary>
+          <summary>사진에서 읽은 글자 확인 (문제가 있을 때)</summary>
           <pre>{rawText}</pre>
         </details>
       )}

@@ -1,5 +1,8 @@
 import { useState } from 'react'
 
+// 표시할 때만 세 자리마다 쉼표를 붙입니다. 저장값은 숫자 문자열로 유지합니다.
+const formatWon = value => String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+
 function BudgetPanel({ selectedMonth, monthlyTotal }) {
   const storageKey = `mymoney-budget-${selectedMonth}`
   const [savedBudget, setSavedBudget] = useState(() => localStorage.getItem(storageKey) || '')
@@ -44,16 +47,17 @@ function BudgetPanel({ selectedMonth, monthlyTotal }) {
         <div className="budget-input">
           <input
             id="monthly-budget"
-            type="number"
+            type="text"
             inputMode="numeric"
-            min="0"
-            step="1"
-            placeholder="예: 500000"
-            value={draft}
+            autoComplete="off"
+            maxLength={19}
+            placeholder="예: 500,000"
+            value={formatWon(draft)}
             aria-describedby="budget-save-status"
             onChange={event => {
-              const value = event.target.value
-              if (value === '' || (Number.isFinite(Number(value)) && Number(value) >= 0)) {
+              // 콤마를 포함한 입력을 숫자 문자열로 정리합니다.
+              const value = event.target.value.replace(/[^0-9]/g, '').replace(/^0+(?=\d)/, '')
+              if (value.length <= 15) {
                 setDraft(value)
                 setStatus('')
               }
